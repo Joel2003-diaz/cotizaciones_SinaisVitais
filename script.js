@@ -1,4 +1,4 @@
-const GOOGLE_SCRIPT_URL = 'TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUÍ';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLXNy7NpRPLKKmx9OX4nmIBDKppmTbTjnh3nU734EprJNVZgT-YamnAjsDsKJVco_dAQ/exec';
 const { jsPDF } = window.jspdf;
 
 // Ruta del logo - AJUSTA ESTA RUTA SEGÚN TU ARCHIVO
@@ -634,4 +634,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar
     calcularTotales();
     mostrarMensaje('info', 'Complete los campos obligatorios (*) para generar la cotización');
+
 });
