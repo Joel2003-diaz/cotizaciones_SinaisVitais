@@ -476,6 +476,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div style="margin-bottom:2mm;">Descuento: $ ${moneda(descuentoTotalPDF)}</div>
                     <div style="font-size:12pt; font-weight:bold;">Total: $ ${moneda(totalFinalPDF)}</div>
                 </div>
+                </div>
+
+                <div style="margin-top: 25mm;">
+                    <div style="width: 250px; border-top: 1px solid #000; padding-top: 2mm; text-align: center;">
+                        <strong style="font-size: 9pt;">Autorizado por:</strong><br>
+                        <span style="font-size: 10pt; text-transform: uppercase;">${data.AUTORIZADO_POR || '_________________________'}</span>
+                    </div>
+                </div>
 
             </div>
         `;
@@ -636,3 +644,4 @@ document.addEventListener('DOMContentLoaded', function() {
     mostrarMensaje('info', 'Complete los campos obligatorios (*) para generar la cotización');
 
 });
+
