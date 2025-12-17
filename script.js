@@ -5,16 +5,38 @@ const { jsPDF } = window.jspdf;
 const LOGO_PATH = 'logo.jpg';
 
 const ciudadesPorDepartamento = {
-    "Cesar": ["Bosconia", "Valledupar", "Aguachica", "Codazzi", "La Paz", "Curumaní"],
-    "Antioquia": ["Medellín", "Envigado", "Itagüí", "Rionegro", "Apartadó"],
-    "Atlántico": ["Barranquilla", "Soledad", "Puerto Colombia", "Malambo"],
-    "Bogotá": ["Bogotá D.C."],
-    "Bolívar": ["Cartagena", "Magangué", "Turbaco"],
-    "Cundinamarca": ["Soacha", "Chía", "Zipaquirá", "Facatativá"],
-    "Valle del Cauca": ["Cali", "Buenaventura", "Palmira", "Tuluá"],
-    "Santander": ["Bucaramanga", "Floridablanca", "Girón", "Barrancabermeja"],
-    "Magdalena": ["Santa Marta", "Ciénaga", "Fundación"],
-    "La Guajira": ["Riohacha", "Maicao", "Uribia"]
+    "Amazonas": ["Leticia", "Puerto Nariño"],
+    "Antioquia": ["Medellín", "Envigado", "Itagüí", "Rionegro", "Apartadó", "Bello", "Turbo"],
+    "Atlántico": ["Barranquilla", "Soledad", "Puerto Colombia", "Malambo", "Sabanalarga"],
+    "Bogotá D.C.": ["Bogotá"],
+    "Bolívar": ["Cartagena", "Magangué", "Turbaco", "Arjona", "Carmen de Bolívar"],
+    "Boyacá": ["Tunja", "Duitama", "Sogamoso", "Chiquinquirá"],
+    "Caldas": ["Manizales", "La Dorada", "Chinchiná", "Villamaría"],
+    "Caquetá": ["Florencia", "Belén de los Andaquíes"],
+    "Casanare": ["Yopal", "Aguazul", "Tauramena"],
+    "Cauca": ["Popayán", "Santander de Quilichao", "Puerto Tejada"],
+    "Cesar": ["Valledupar", "Aguachica", "Codazzi", "La Paz", "Bosconia", "Curumaní"],
+    "Chocó": ["Quibdó", "Istmina", "Tadó"],
+    "Córdoba": ["Montería", "Cereté", "Sahagún", "Lorica"],
+    "Cundinamarca": ["Soacha", "Chía", "Zipaquirá", "Facatativá", "Girardot", "Fusagasugá"],
+    "Guainía": ["Inírida"],
+    "Guaviare": ["San José del Guaviare"],
+    "Huila": ["Neiva", "Pitalito", "Garzón", "La Plata"],
+    "La Guajira": ["Riohacha", "Maicao", "Uribia", "Manaure"],
+    "Magdalena": ["Santa Marta", "Ciénaga", "Fundación", "Aracataca", "El Banco"],
+    "Meta": ["Villavicencio", "Acacías", "Granada"],
+    "Nariño": ["Pasto", "Tumaco", "Ipiales"],
+    "Norte de Santander": ["Cúcuta", "Ocaña", "Pamplona"],
+    "Putumayo": ["Mocoa", "Puerto Asís", "Villagarzón"],
+    "Quindío": ["Armenia", "Calarcá", "La Tebaida", "Montenegro"],
+    "Risaralda": ["Pereira", "Dosquebradas", "Santa Rosa de Cabal"],
+    "San Andrés y Providencia": ["San Andrés", "Providencia"],
+    "Santander": ["Bucaramanga", "Floridablanca", "Girón", "Barrancabermeja", "Piedecuesta"],
+    "Sucre": ["Sincelejo", "Corozal", "Sampués"],
+    "Tolima": ["Ibagué", "Espinal", "Honda"],
+    "Valle del Cauca": ["Cali", "Buenaventura", "Palmira", "Tuluá", "Cartago", "Buga"],
+    "Vaupés": ["Mitú"],
+    "Vichada": ["Puerto Carreño"]
 };
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -46,10 +68,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners
     vaciarBtn.addEventListener('click', vaciarFormulario);
     guardarImprimirBtn.addEventListener('click', guardarYCrearPDF);
-    imprimirBtn.addEventListener('click', imprimirCotizacion);
     descargarPdfBtn.addEventListener('click', generarPDF);
     agregarProductoBtn.addEventListener('click', agregarProducto);
-    if(dptoSelect) dptoSelect.addEventListener('change', actualizarCiudades);
+    
+    // Event listener para departamento
+    if(dptoSelect) {
+        dptoSelect.addEventListener('change', actualizarCiudades);
+        console.log("Event listener para departamento configurado");
+    }
 
     // Validación en tiempo real y cálculo de totales
     form.addEventListener('input', function() {
@@ -74,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let productoIndex = 1;
 
     // Función para agregar nuevo producto
-     function agregarProducto() {
+    function agregarProducto() {
         const productoHTML = `
             <div class="producto-item" data-index="${productoIndex}">
                 <div class="producto-header">
@@ -148,7 +174,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const inputs = producto.querySelectorAll('input');
             inputs.forEach(input => {
                 input.setAttribute('data-index', index);
-                input.id = input.id.replace(/\d+$/, index);
+                const id = input.id.split('_')[0] + '_' + index;
+                input.id = id;
             });
             
             // Actualizar botón de eliminar
@@ -193,10 +220,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function vaciarFormulario() {
         if (confirm('¿Está seguro de que desea vaciar todo el formulario?')) {
             form.reset();
+            
             // Limpiar y deshabilitar ciudad
-            ciudadSelect.innerHTML = '<option value="">Elija un departamento</option>';
-            ciudadSelect.disabled = true;
-            document.getElementById('CIUDAD').disabled = true;
+            if (ciudadSelect) {
+                ciudadSelect.innerHTML = '<option value="">Elija un departamento</option>';
+                ciudadSelect.disabled = true;
+            }
+            
             document.getElementById('FECHA_COTIZACION').value = today.toISOString().split('T')[0];
             document.getElementById('TIPO_DOCUMENTO').value = 'CC';
             document.getElementById('SEXO').value = 'M';
@@ -227,7 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para habilitar/deshabilitar botones
     function habilitarBotones(habilitar) {
-        imprimirBtn.disabled = !habilitar;
         descargarPdfBtn.disabled = !habilitar;
     }
 
@@ -255,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para guardar en Google Sheets - INCLUYE OBSERVACIÓN ADICIONAL
+    // Función para guardar en Google Sheets
     async function guardarEnGoogleSheets() {
         const productos = [];
         const productoElements = document.querySelectorAll('.producto-item');
@@ -285,6 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
             valoresConcatenados += valor;
         });
         
+        // RECOGER TODOS LOS DATOS DEL FORMULARIO
         const datosParaEnviar = {
             N_CONSECUTIVO: document.getElementById('N_CONSECUTIVO').value,
             FECHA_COTIZACION: document.getElementById('FECHA_COTIZACION').value,
@@ -293,13 +323,22 @@ document.addEventListener('DOMContentLoaded', function() {
             NOMBRES: document.getElementById('NOMBRES').value,
             EMPRESA: document.getElementById('EMPRESA').value,
             ESPECIALIDAD: document.getElementById('ESPECIALIDAD').value,
-            SERVICIO_COTIZADO: serviciosConcatenados, // Concatenado de todos los servicios
-            VALOR: valoresConcatenados, // Concatenado de todos los valores
+            SERVICIO_COTIZADO: serviciosConcatenados,
+            VALOR: valoresConcatenados,
             OBSERVACION_ADICIONAL: document.getElementById('OBSERVACION_ADICIONAL').value,
-            PRODUCTOS_JSON: JSON.stringify(productos), // JSON completo por si lo necesitas
+            PRODUCTOS_JSON: JSON.stringify(productos),
             OBSERVACION_GENERAL: document.getElementById('OBSERVACION_GENERAL').value,
+            // AÑADIR CAMPOS ADICIONALES PARA EVITAR EL ERROR
+            TELEFONO: document.getElementById('TELEFONO')?.value || '',
+            ADMISION: document.getElementById('ADMISION')?.value || '',
+            DIRECCION: document.getElementById('DIRECCION')?.value || '',
+            DEPARTAMENTO: document.getElementById('DEPARTAMENTO')?.value || '',
+            CIUDAD: document.getElementById('CIUDAD')?.value || '',
+            AUTORIZADO_POR: document.getElementById('AUTORIZADO_POR')?.value || '',
             FECHA_REGISTRO: new Date().toISOString()
         };
+
+        console.log("Datos a enviar:", datosParaEnviar);
 
         try {
             const params = new URLSearchParams();
@@ -323,16 +362,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para generar el HTML del PDF - NO INCLUYE OBSERVACIÓN ADICIONAL
+    // Función para generar el contenido del PDF
     function generarContenidoPDF() {
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
+        // Obtener valores directamente de los elementos del DOM
+        const nConsecutivo = document.getElementById('N_CONSECUTIVO')?.value || '';
+        const fechaCotizacion = document.getElementById('FECHA_COTIZACION')?.value || '';
+        const empresa = document.getElementById('EMPRESA')?.value || '';
+        const admision = document.getElementById('ADMISION')?.value || '';
+        const nombres = document.getElementById('NOMBRES')?.value || '';
+        const documento = document.getElementById('DOCUMENTO')?.value || '';
+        const tipoDocumento = document.getElementById('TIPO_DOCUMENTO')?.value || '';
+        const sexo = document.getElementById('SEXO')?.value || '';
+        const direccion = document.getElementById('DIRECCION')?.value || '';
+        const departamento = document.getElementById('DEPARTAMENTO')?.value || '';
+        const ciudad = document.getElementById('CIUDAD')?.value || '';
+        const telefono = document.getElementById('TELEFONO')?.value || '';
+        const observacionGeneral = document.getElementById('OBSERVACION_GENERAL')?.value || '';
+        const autorizadoPor = document.getElementById('AUTORIZADO_POR')?.value || '';
         
         const moneda = v => new Intl.NumberFormat('es-CO', { 
             maximumFractionDigits: 0 
         }).format(v);
         
-        const fecha = new Date(data.FECHA_COTIZACION).toLocaleDateString('es-CO');
+        const fecha = fechaCotizacion ? new Date(fechaCotizacion).toLocaleDateString('es-CO') : new Date().toLocaleDateString('es-CO');
         
         // Calcular totales para el PDF
         let subtotalPDF = 0;
@@ -367,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const totalFinalPDF = subtotalPDF - descuentoTotalPDF;
         
-        // Generar HTML para el PDF CON DISEÑO EXACTO COMO LA IMAGEN
+        // Generar HTML para el PDF
         let tablaProductos = '';
         productosPDF.forEach(producto => {
             tablaProductos += `
@@ -385,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return `
             <div id="pdfContent" style="width:210mm; min-height:297mm; padding:15mm 20mm; box-sizing:border-box; font-family:Arial, sans-serif; font-size:9pt; color:#000; line-height:1.2;">
             
-                <!-- CABECERA CON LOGO - DISEÑO EXACTO COMO LA IMAGEN -->
+                <!-- CABECERA CON LOGO -->
                 <table style="width:100%; border-collapse:collapse; border:1px solid #000; margin-bottom:10mm;">
                     <tr>
                         <!-- LOGO IZQUIERDA -->
@@ -433,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <!-- FECHA Y NÚMERO DE COTIZACIÓN -->
                 <div style="text-align:center; font-weight:bold; font-size:10pt; margin-bottom:8mm;">
-                    Fecha de Cotización: ${fecha} &nbsp;&nbsp; | &nbsp;&nbsp; N° Cotización: ${data.N_CONSECUTIVO || ''}
+                    Fecha de Cotización: ${fecha} &nbsp;&nbsp; | &nbsp;&nbsp; N° Cotización: ${nConsecutivo}
                 </div>
 
                 <hr style="border:none; border-top:1px solid #000; margin-bottom:8mm;">
@@ -441,26 +493,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 <!-- DATOS DEL PACIENTE -->
                 <table style="width:100%; font-size:9pt; margin-bottom:10mm; border-collapse:collapse;">
                 <tr>
-                    <td style="width:50%; padding:1mm 0;"><strong>Señores:</strong> ${data.EMPRESA || ''}</td>
-                    <td style="width:50%; padding:1mm 0;"><strong>Admisión:</strong> ${data.ADMISION || ''}</td>
+                    <td style="width:50%; padding:1mm 0;"><strong>Señores:</strong> ${empresa}</td>
+                    <td style="width:50%; padding:1mm 0;"><strong>Admisión:</strong> ${admision}</td>
                 </tr>
                 <tr>
-                    <td style="padding:1mm 0;"><strong>Paciente:</strong> ${data.NOMBRES || ''}</td>
+                    <td style="padding:1mm 0;"><strong>Paciente:</strong> ${nombres}</td>
                     <td style="padding:1mm 0;">
-                        <strong>CC:</strong> ${data.DOCUMENTO || ''} &nbsp; 
-                        <strong>TD:</strong> ${data.TIPO_DOCUMENTO || ''} &nbsp; 
-                        <strong>Sexo:</strong> ${data.SEXO || ''}
+                        <strong>CC:</strong> ${documento} &nbsp; 
+                        <strong>TD:</strong> ${tipoDocumento} &nbsp; 
+                        <strong>Sexo:</strong> ${sexo}
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding:1mm 0;"><strong>Dirección:</strong> ${data.DIRECCION || ''}</td>
+                    <td style="padding:1mm 0;"><strong>Dirección:</strong> ${direccion}</td>
                     <td style="padding:1mm 0;">
-                        <strong>Depto:</strong> ${data.DEPARTAMENTO || ''} &nbsp; 
-                        <strong>Ciudad:</strong> ${data.CIUDAD || ''}
+                        <strong>Depto:</strong> ${departamento} &nbsp; 
+                        <strong>Ciudad:</strong> ${ciudad}
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding:1mm 0;"><strong>Teléfono:</strong> ${data.TELEFONO || ''}</td>
+                    <td style="padding:1mm 0;"><strong>Teléfono:</strong> ${telefono}</td>
                     <td style="padding:1mm 0;"></td>
                 </tr>
                 </table>
@@ -482,11 +534,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </tbody>
                 </table>
 
-                <!-- OBSERVACIÓN (SOLO LA GENERAL, NO LA ADICIONAL) -->
+                <!-- OBSERVACIÓN -->
                 <div style="margin-bottom:10mm;">
                     <div style="font-weight:bold; margin-bottom:2mm; font-size:10pt;">Observación</div>
                     <div style="border:1px solid #000; padding:4mm; min-height:20mm;">
-                        ${data.OBSERVACION_GENERAL || ''}
+                        ${observacionGeneral}
                     </div>
                 </div>
 
@@ -496,12 +548,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div style="margin-bottom:2mm;">Descuento: $ ${moneda(descuentoTotalPDF)}</div>
                     <div style="font-size:12pt; font-weight:bold;">Total: $ ${moneda(totalFinalPDF)}</div>
                 </div>
-                </div>
 
-                <div style="margin-top: 25mm;">
-                    <div style="width: 250px; border-top: 1px solid #000; padding-top: 2mm; text-align: center;">
-                        <strong style="font-size: 9pt;">Autorizado por:</strong><br>
-                        <span style="font-size: 10pt; text-transform: uppercase;">${data.AUTORIZADO_POR || '_________________________'}</span>
+                <!-- FIRMA -->
+                <div style="margin-top:25mm;">
+                    <div style="width:250px; border-top:1px solid #000; padding-top:2mm; text-align:center;">
+                        <strong style="font-size:9pt;">Autorizado por:</strong><br>
+                        <span style="font-size:10pt; text-transform:uppercase;">${autorizadoPor}</span>
                     </div>
                 </div>
 
@@ -597,101 +649,62 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para imprimir directamente
-    function imprimirCotizacion() {
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
-        
-        const printWindow = window.open('', '_blank');
-        const contenidoPDF = generarContenidoPDF();
-        
-        const printContent = `
-            <!DOCTYPE html>
-            <html lang="es">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Cotización ${document.getElementById('N_CONSECUTIVO').value}</title>
-                <style>
-                    @media print {
-                        @page {
-                            size: A4;
-                            margin: 15mm;
-                        }
-                        body {
-                            font-family: Arial, sans-serif;
-                            font-size: 11pt;
-                            line-height: 1.3;
-                            margin: 0;
-                            padding: 0;
-                        }
-                    }
-                </style>
-            </head>
-            <body>
-                ${contenidoPDF}
-                <script>
-                    window.onload = function() {
-                        window.print();
-                        setTimeout(function() {
-                            window.close();
-                        }, 1000);
-                    };
-                </script>
-            </body>
-            </html>
-        `;
-        
-        printWindow.document.write(printContent);
-        printWindow.document.close();
-    }
-
-    // Función para mostrar mensajes
-    function mostrarMensaje(tipo, mensaje) {
-        responseDiv.className = `response-message ${tipo}`;
-        responseDiv.textContent = mensaje;
-        
-        setTimeout(() => {
-            responseDiv.textContent = '';
-            responseDiv.className = 'response-message';
-        }, 5000);
-    }
+    // Función para actualizar ciudades
     function actualizarCiudades() {
+        if (!dptoSelect || !ciudadSelect) return;
+        
         const dptoSeleccionado = dptoSelect.value;
-        console.log("Departamento detectado:", dptoSeleccionado);
-
+        console.log("Departamento seleccionado:", dptoSeleccionado);
+        
         // Limpiar ciudades actuales
         ciudadSelect.innerHTML = '';
         
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = dptoSeleccionado ? "Seleccione una ciudad..." : "Primero elija un departamento";
-        ciudadSelect.appendChild(defaultOption);
-
         if (dptoSeleccionado && ciudadesPorDepartamento[dptoSeleccionado]) {
             ciudadSelect.disabled = false;
+            
+            // Agregar opción por defecto
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = "Seleccione una ciudad";
+            ciudadSelect.appendChild(defaultOption);
+            
+            // Agregar ciudades del departamento
             ciudadesPorDepartamento[dptoSeleccionado].forEach(ciudad => {
                 const option = document.createElement("option");
                 option.value = ciudad;
                 option.textContent = ciudad;
                 ciudadSelect.appendChild(option);
             });
-            console.log("Ciudades cargadas para:", dptoSeleccionado);
+            
+            console.log(`Ciudades cargadas: ${ciudadesPorDepartamento[dptoSeleccionado].length} ciudades para ${dptoSeleccionado}`);
         } else {
             ciudadSelect.disabled = true;
-            ciudadSelect.innerHTML = '<option value="">Elija un departamento</option>';
+            const option = document.createElement("option");
+            option.value = "";
+            option.textContent = "Primero elija un departamento";
+            ciudadSelect.appendChild(option);
         }
+    }
+
+    // Función para mostrar mensajes
+    function mostrarMensaje(tipo, mensaje) {
+        if (!responseDiv) return;
+        
+        responseDiv.className = `response-message ${tipo}`;
+        responseDiv.textContent = mensaje;
+        responseDiv.style.display = 'block';
+        
+        setTimeout(() => {
+            responseDiv.textContent = '';
+            responseDiv.className = 'response-message';
+            responseDiv.style.display = 'none';
+        }, 5000);
     }
 
     // Inicializar
     calcularTotales();
     mostrarMensaje('info', 'Complete los campos obligatorios (*) para generar la cotización');
 
+    // Asegurarse de que el listener se haya configurado
+    console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
 });
-
-
-
-
-
