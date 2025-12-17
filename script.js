@@ -658,12 +658,6 @@ document.addEventListener('DOMContentLoaded', function() {
             responseDiv.className = 'response-message';
         }, 5000);
     }
-
-    // Inicializar
-    calcularTotales();
-    mostrarMensaje('info', 'Complete los campos obligatorios (*) para generar la cotización');
-    
-    // fincion para actualzar ciudades.
     function actualizarCiudades() {
         const dptoSeleccionado = dptoSelect.value;
         console.log("Departamento detectado:", dptoSeleccionado);
@@ -691,7 +685,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Inicializar
+    calcularTotales();
+    mostrarMensaje('info', 'Complete los campos obligatorios (*) para generar la cotización');
+
 });
+
 
 
 
