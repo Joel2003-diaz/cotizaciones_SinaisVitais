@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const productosContainer = document.getElementById('productosContainer');
     const responseDiv = document.getElementById('responseMessage');
     const dptoSelect = document.getElementById('DEPARTAMENTO');
+    const ciudadSelect = document.getElementById('CIUDAD');
     
     // Elementos de totales
     const subtotalElement = document.getElementById('subtotal');
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let productoIndex = 1;
 
     // Función para agregar nuevo producto
-    function agregarProducto() {
+     function agregarProducto() {
         const productoHTML = `
             <div class="producto-item" data-index="${productoIndex}">
                 <div class="producto-header">
@@ -193,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (confirm('¿Está seguro de que desea vaciar todo el formulario?')) {
             form.reset();
             // Limpiar y deshabilitar ciudad
-            const ciudadSelect = document.getElementById('CIUDAD');
             ciudadSelect.innerHTML = '<option value="">Elija un departamento</option>';
             ciudadSelect.disabled = true;
             document.getElementById('CIUDAD').disabled = true;
@@ -665,8 +665,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // fincion para actualzar ciudades.
     function actualizarCiudades() {
-        const dptoSelect = document.getElementById("DEPARTAMENTO");
-        const ciudadSelect = document.getElementById("CIUDAD");
         const dptoSeleccionado = dptoSelect.value;
 
         // Limpiar ciudades actuales
@@ -687,5 +685,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+
 
 
