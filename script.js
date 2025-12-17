@@ -708,3 +708,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asegurarse de que el listener se haya configurado
     console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
 });
+
