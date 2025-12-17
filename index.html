@@ -69,8 +69,8 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="EMPRESA">EPS / Empresa *</label>
-                            <select id="eps_select" name="eps_select" required>
+                            <label for="EMPRESA">EMPRESA*</label>
+                            <select id="EMPRESA" name="EMPRESA" required>
                                 <option value="">Selecciona una EPS</option>
                                 <option value="DUSAKAWI EPS-I">DUSAKAWI EPS-I</option>
                                 <option value="ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S">ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S</option>
@@ -94,8 +94,8 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="ESPECIALIDAD">Especialidad *</label>
-                            <select id="especialidad_select" name="especialidad_select" required>
+                            <label for="ESPECIALIDAD">ESPECIALIDAD *</label>
+                            <select id="ESPECIALIDAD" name="ESPECIALIDAD" required>
                                 <option value="">Selecciona una especialidad</option>
                                 <option value="CIRUGIA MAXILOFACIAL">CIRUGIA MAXILOFACIAL</option>
                                 <option value="ORTOPEDIA">ORTOPEDIA</option>
@@ -207,57 +207,56 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="DIRECCION">Dirección</label>
+                            <label for="DIRECCION">DIRECCION</label>
                             <input type="text" id="DIRECCION" name="DIRECCION" 
                                 placeholder="Calle, número, barrio">
                         </div>
                         
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="DEPARTAMENTO">Departamento</label>
-                                <select id="DEPARTAMENTO" name="DEPARTAMENTO" required onchange="actualizarCiudades()">
-                                    <option value="">Seleccione un departamento...</option>
-                                    <option value="Amazonas">Amazonas</option>
-                                    <option value="Antioquia">Antioquia</option>
-                                    <option value="Atlántico">Atlántico</option>
-                                    <option value="Bolívar">Bolívar</option>
-                                    <option value="Boyacá">Boyacá</option>
-                                    <option value="Caldas">Caldas</option>
-                                    <option value="Caquetá">Caquetá</option>
-                                    <option value="Casanare">Casanare</option>
-                                    <option value="Cauca">Cauca</option>
-                                    <option value="Cesar">Cesar</option>
-                                    <option value="Chocó">Chocó</option>
-                                    <option value="Córdoba">Córdoba</option>
-                                    <option value="Cundinamarca">Cundinamarca</option>
-                                    <option value="Guainía">Guainía</option>
-                                    <option value="Guaviare">Guaviare</option>
-                                    <option value="Huila">Huila</option>
-                                    <option value="La Guajira">La Guajira</option>
-                                    <option value="Magdalena">Magdalena</option>
-                                    <option value="Meta">Meta</option>
-                                    <option value="Nariño">Nariño</option>
-                                    <option value="Norte de Santander">Norte de Santander</option>
-                                    <option value="Putumayo">Putumayo</option>
-                                    <option value="Quindío">Quindío</option>
-                                    <option value="Risaralda">Risaralda</option>
-                                    <option value="San Andrés y Providencia">San Andrés y Providencia</option>
-                                    <option value="Santander">Santander</option>
-                                    <option value="Sucre">Sucre</option>
-                                    <option value="Tolima">Tolima</option>
-                                    <option value="Valle del Cauca">Valle del Cauca</option>
-                                    <option value="Vaupés">Vaupés</option>
-                                    <option value="Vichada">Vichada</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="CIUDAD">CIUDAD</label>
-                                <select id="CIUDAD" name="CIUDAD" required disabled>
-                                    <option value="">Primero elija un departamento</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="DEPARTAMENTO">Departamento</label>
+                            <select id="DEPARTAMENTO" name="DEPARTAMENTO" required>
+                                <option value="">Seleccione un departamento...</option>
+                                <option value="Amazonas">Amazonas</option>
+                                <option value="Antioquia">Antioquia</option>
+                                <option value="Atlántico">Atlántico</option>
+                                <option value="Bolívar">Bolívar</option>
+                                <option value="Boyacá">Boyacá</option>
+                                <option value="Caldas">Caldas</option>
+                                <option value="Caquetá">Caquetá</option>
+                                <option value="Casanare">Casanare</option>
+                                <option value="Cauca">Cauca</option>
+                                <option value="Cesar">Cesar</option>
+                                <option value="Chocó">Chocó</option>
+                                <option value="Córdoba">Córdoba</option>
+                                <option value="Cundinamarca">Cundinamarca</option>
+                                <option value="Guainía">Guainía</option>
+                                <option value="Guaviare">Guaviare</option>
+                                <option value="Huila">Huila</option>
+                                <option value="La Guajira">La Guajira</option>
+                                <option value="Magdalena">Magdalena</option>
+                                <option value="Meta">Meta</option>
+                                <option value="Nariño">Nariño</option>
+                                <option value="Norte de Santander">Norte de Santander</option>
+                                <option value="Putumayo">Putumayo</option>
+                                <option value="Quindío">Quindío</option>
+                                <option value="Risaralda">Risaralda</option>
+                                <option value="San Andrés y Providencia">San Andrés y Providencia</option>
+                                <option value="Santander">Santander</option>
+                                <option value="Sucre">Sucre</option>
+                                <option value="Tolima">Tolima</option>
+                                <option value="Valle del Cauca">Valle del Cauca</option>
+                                <option value="Vaupés">Vaupés</option>
+                                <option value="Vichada">Vichada</option>
+                            </select>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="CIUDAD">CIUDAD</label>
+                            <select id="CIUDAD" name="CIUDAD" required disabled>
+                                <option value="">Primero elija un departamento</option>
+                            </select>
+                        </div>
+                    </div>
                     
                     <div class="form-row">
                         <div class="form-group full-width">
@@ -266,6 +265,7 @@
                                     placeholder="Esta observación aparecerá en el PDF"></textarea>
                         </div>
                     </div>
+                    
                     <div class="form-row">
                         <div class="form-group full-width">
                             <label for="AUTORIZADO_POR">Autorizado por: *</label>
@@ -297,6 +297,7 @@
 </body>
 
 </html>
+
 
 
 
