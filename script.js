@@ -4,6 +4,19 @@ const { jsPDF } = window.jspdf;
 // Ruta del logo - AJUSTA ESTA RUTA SEGÚN TU ARCHIVO
 const LOGO_PATH = 'logo.jpg';
 
+const ciudadesPorDepartamento = {
+    "Cesar": ["Bosconia", "Valledupar", "Aguachica", "Codazzi", "La Paz", "Curumaní"],
+    "Antioquia": ["Medellín", "Envigado", "Itagüí", "Rionegro", "Apartadó"],
+    "Atlántico": ["Barranquilla", "Soledad", "Puerto Colombia", "Malambo"],
+    "Bogotá": ["Bogotá D.C."],
+    "Bolívar": ["Cartagena", "Magangué", "Turbaco"],
+    "Cundinamarca": ["Soacha", "Chía", "Zipaquirá", "Facatativá"],
+    "Valle del Cauca": ["Cali", "Buenaventura", "Palmira", "Tuluá"],
+    "Santander": ["Bucaramanga", "Floridablanca", "Girón", "Barrancabermeja"],
+    "Magdalena": ["Santa Marta", "Ciénaga", "Fundación"],
+    "La Guajira": ["Riohacha", "Maicao", "Uribia"]
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos DOM
     const form = document.getElementById('cotizacionForm');
@@ -14,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const agregarProductoBtn = document.getElementById('agregarProductoBtn');
     const productosContainer = document.getElementById('productosContainer');
     const responseDiv = document.getElementById('responseMessage');
+    const dptoSelect = document.getElementById('DEPARTAMENTO');
     
     // Elementos de totales
     const subtotalElement = document.getElementById('subtotal');
@@ -34,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     imprimirBtn.addEventListener('click', imprimirCotizacion);
     descargarPdfBtn.addEventListener('click', generarPDF);
     agregarProductoBtn.addEventListener('click', agregarProducto);
+    if(dptoSelect) dptoSelect.addEventListener('change', actualizarCiudades);
 
     // Validación en tiempo real y cálculo de totales
     form.addEventListener('input', function() {
@@ -177,6 +192,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function vaciarFormulario() {
         if (confirm('¿Está seguro de que desea vaciar todo el formulario?')) {
             form.reset();
+            // Limpiar y deshabilitar ciudad
+            const ciudadSelect = document.getElementById('CIUDAD');
+            ciudadSelect.innerHTML = '<option value="">Elija un departamento</option>';
+            ciudadSelect.disabled = true;
+            document.getElementById('CIUDAD').disabled = true;
             document.getElementById('FECHA_COTIZACION').value = today.toISOString().split('T')[0];
             document.getElementById('TIPO_DOCUMENTO').value = 'CC';
             document.getElementById('SEXO').value = 'M';
@@ -642,6 +662,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar
     calcularTotales();
     mostrarMensaje('info', 'Complete los campos obligatorios (*) para generar la cotización');
+    
+    // fincion para actualzar ciudades.
+    function actualizarCiudades() {
+        const dptoSelect = document.getElementById("DEPARTAMENTO");
+        const ciudadSelect = document.getElementById("CIUDAD");
+        const dptoSeleccionado = dptoSelect.value;
+
+        // Limpiar ciudades actuales
+        ciudadSelect.innerHTML = '<option value="">Seleccione ciudad...</option>';
+
+        if (dptoSeleccionado && ciudadesPorDepartamento[dptoSeleccionado]) {
+            ciudadSelect.disabled = false;
+            ciudadesPorDepartamento[dptoSeleccionado].forEach(ciudad => {
+                const option = document.createElement("option");
+                option.value = ciudad;
+                option.textContent = ciudad;
+                ciudadSelect.appendChild(option);
+            });
+        } else {
+            ciudadSelect.disabled = true;
+            ciudadSelect.innerHTML = '<option value="">Elija un departamento</option>';
+        }
+    }
 
 });
+
 
