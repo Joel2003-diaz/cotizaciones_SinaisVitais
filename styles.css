@@ -432,4 +432,36 @@ body {
 .form-group textarea[placeholder*="Google Sheets"]:focus {
     background-color: #fff;
     border: 1px solid #3498db;
+
+}
+/* --- Ajustes para el campo de Autorizador --- */
+
+/* Asegura que la sección de validación tenga un color distintivo si usas la clase pdf-only o similar */
+.auth-section {
+    background: #f0f7f4 !important; /* Un verde muy tenue para indicar validación */
+    border-left-color: var(--success-color) !important;
+}
+
+/* El campo de nombre debe resaltar */
+#AUTORIZADO_POR {
+    font-weight: 600;
+    color: var(--text-color);
+    border-left: 3px solid var(--success-color);
+}
+
+/* Estilo para que el label de este campo se vea un poco más importante */
+.form-group label[for="AUTORIZADO_POR"] {
+    color: var(--success-color);
+}
+
+/* Útil si quieres que el campo ocupe todo el ancho en pantallas grandes */
+.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Ajuste preventivo para que no se pegue al fondo en dispositivos móviles */
+@media (max-width: 768px) {
+    .auth-section {
+        margin-bottom: 20px;
+    }
 }
