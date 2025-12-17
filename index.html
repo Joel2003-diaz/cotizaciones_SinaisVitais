@@ -7,35 +7,44 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <!-- Solo formulario (sin vista previa) -->
         <div class="form-container">
-            <h1 class="main-title">📋 Generador de Cotizaciones</h1>
+            <!-- Logo (opcional) -->
+            <div class="logo-container">
+                <img src="logo.jpg" alt="Logo Clínica Sinais Vitais" class="logo" onerror="this.style.display='none'">
+            </div>
+            
+            <h1 class="main-title"><i class="fas fa-file-invoice-dollar"></i> Generador de Cotizaciones</h1>
             <h2 class="section-title">Clínica Regional de Especialistas Sinais Vitais S.A.S</h2>
             
-            <form id="cotizacionForm">
+            <form id="cotizacionForm" novalidate>
                 <!-- Información básica (para Google Sheets) -->
                 <div class="form-section">
-                    <h3>Información Principal *</h3>
+                    <h3><i class="fas fa-info-circle"></i> Información Principal</h3>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="N_CONSECUTIVO">N° Cotización *</label>
+                            <label for="N_CONSECUTIVO" class="required">N° Cotización</label>
                             <input type="text" id="N_CONSECUTIVO" name="N_CONSECUTIVO" required 
-                                placeholder="Ej: 1524" maxlength="10">
+                                placeholder="Ej: 1524" maxlength="10"
+                                data-tooltip="Número único de cotización">
                         </div>
                         
                         <div class="form-group">
-                            <label for="FECHA_COTIZACION">Fecha *</label>
-                            <input type="date" id="FECHA_COTIZACION" name="FECHA_COTIZACION" required>
+                            <label for="FECHA_COTIZACION" class="required">Fecha</label>
+                            <input type="date" id="FECHA_COTIZACION" name="FECHA_COTIZACION" required
+                                data-tooltip="Fecha de la cotización">
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="TIPO_DOCUMENTO">Tipo Documento *</label>
-                            <select id="TIPO_DOCUMENTO" name="TIPO_DOCUMENTO" required>
+                            <label for="TIPO_DOCUMENTO" class="required">Tipo Documento</label>
+                            <select id="TIPO_DOCUMENTO" name="TIPO_DOCUMENTO" required
+                                data-tooltip="Tipo de documento del paciente">
                                 <option value="CC">Cédula de Ciudadanía (CC)</option>
                                 <option value="TI">Tarjeta de Identidad (TI)</option>
                                 <option value="CE">Cédula de Extranjería (CE)</option>
@@ -45,22 +54,25 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="DOCUMENTO">N° Documento *</label>
+                            <label for="DOCUMENTO" class="required">N° Documento</label>
                             <input type="text" id="DOCUMENTO" name="DOCUMENTO" required 
-                                placeholder="Número de documento">
+                                placeholder="Número de documento"
+                                data-tooltip="Número de documento del paciente">
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="NOMBRES">Nombres Paciente *</label>
+                            <label for="NOMBRES" class="required">Nombres Paciente</label>
                             <input type="text" id="NOMBRES" name="NOMBRES" required 
-                                placeholder="Apellidos y Nombres">
+                                placeholder="Apellidos y Nombres"
+                                data-tooltip="Nombre completo del paciente">
                         </div>
                         
                         <div class="form-group">
-                            <label for="SEXO">Sexo *</label>
-                            <select id="SEXO" name="SEXO" required>
+                            <label for="SEXO" class="required">Sexo</label>
+                            <select id="SEXO" name="SEXO" required
+                                data-tooltip="Sexo del paciente">
                                 <option value="M">Masculino (M)</option>
                                 <option value="F">Femenino (F)</option>
                             </select>
@@ -69,8 +81,9 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="EMPRESA">EMPRESA*</label>
-                            <select id="EMPRESA" name="EMPRESA" required>
+                            <label for="EMPRESA" class="required">Empresa/EPS</label>
+                            <select id="EMPRESA" name="EMPRESA" required
+                                data-tooltip="Entidad a la que pertenece el paciente">
                                 <option value="">Selecciona una EPS</option>
                                 <option value="DUSAKAWI EPS-I">DUSAKAWI EPS-I</option>
                                 <option value="ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S">ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S</option>
@@ -90,12 +103,13 @@
                                 <option value="NUEVA EPS">NUEVA EPS</option>
                                 <option value="REGIONAL DE ASEGURAMIENTO Nº 8">REGIONAL DE ASEGURAMIENTO Nº 8</option>
                                 <option value="POSITIVA COMPAÑÍA DE SEGUROS S.A. (ARL)">POSITIVA COMPAÑÍA DE SEGUROS S.A. (ARL)</option>
-                                </select>
+                            </select>
                         </div>
                         
                         <div class="form-group">
-                            <label for="ESPECIALIDAD">ESPECIALIDAD *</label>
-                            <select id="ESPECIALIDAD" name="ESPECIALIDAD" required>
+                            <label for="ESPECIALIDAD" class="required">Especialidad</label>
+                            <select id="ESPECIALIDAD" name="ESPECIALIDAD" required
+                                data-tooltip="Especialidad médica requerida">
                                 <option value="">Selecciona una especialidad</option>
                                 <option value="CIRUGIA MAXILOFACIAL">CIRUGIA MAXILOFACIAL</option>
                                 <option value="ORTOPEDIA">ORTOPEDIA</option>
@@ -108,7 +122,7 @@
                                 <option value="GINECOLOGIA">GINECOLOGIA</option>
                                 <option value="INTENSIVISTA">INTENSIVISTA</option>
                                 <option value="MEDICINA INTERNA">MEDICINA INTERNA</option>
-                                </select>
+                            </select>
                         </div>
                     </div>
                     
@@ -125,9 +139,9 @@
                 <!-- PRODUCTOS / SERVICIOS -->
                 <div class="form-section" id="productosSection">
                     <div class="section-header">
-                        <h3>Productos / Servicios</h3>
+                        <h3><i class="fas fa-boxes"></i> Productos / Servicios</h3>
                         <button type="button" id="agregarProductoBtn" class="btn btn-success btn-sm">
-                            ➕ Agregar Producto
+                            <i class="fas fa-plus-circle"></i> Agregar Producto
                         </button>
                     </div>
                     
@@ -135,37 +149,41 @@
                         <!-- Producto 1 -->
                         <div class="producto-item" data-index="0">
                             <div class="producto-header">
-                                <span>Producto #1</span>
-                                <button type="button" class="btn-eliminar-producto btn-danger btn-sm" data-index="0">
-                                    ✖ Eliminar
+                                <span><i class="fas fa-cube"></i> Producto #1</span>
+                                <button type="button" class="btn-eliminar-producto btn-danger btn-sm" data-index="0"
+                                        data-tooltip="Eliminar este producto">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
                                 </button>
                             </div>
                             
                             <div class="form-row">
                                 <div class="form-group full-width">
-                                    <label for="SERVICIO_COTIZADO_0">Descripción *</label>
+                                    <label for="SERVICIO_COTIZADO_0" class="required">Descripción</label>
                                     <input type="text" class="servicio-cotizado" name="SERVICIO_COTIZADO[]" required 
-                                        placeholder="Descripción del servicio" data-index="0">
+                                        placeholder="Descripción detallada del servicio" data-index="0">
                                 </div>
                             </div>
                             
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="CANTIDAD_0">Cantidad *</label>
+                                    <label for="CANTIDAD_0" class="required">Cantidad</label>
                                     <input type="number" class="cantidad" name="CANTIDAD[]" min="1" value="1" required 
-                                        placeholder="Cantidad" data-index="0">
+                                        placeholder="Cantidad" data-index="0"
+                                        data-tooltip="Cantidad de unidades">
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="VALOR_0">Valor Unitario *</label>
-                                    <input type="number" class="valor-unitario" name="VALOR[]" min="0" step="1" required 
-                                        placeholder="$" data-index="0">
+                                    <label for="VALOR_0" class="required">Valor Unitario</label>
+                                    <input type="number" class="valor-unitario" name="VALOR[]" min="0" step="100" required 
+                                        placeholder="$" data-index="0"
+                                        data-tooltip="Valor por unidad">
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="PORCENTAJE_DESCUENTO_0">% Descuento *</label>
+                                    <label for="PORCENTAJE_DESCUENTO_0" class="required">% Descuento</label>
                                     <input type="number" class="porcentaje-descuento" name="PORCENTAJE_DESCUENTO[]" 
-                                        min="0" max="100" step="0.1" value="0" required data-index="0">
+                                        min="0" max="100" step="0.1" value="0" required data-index="0"
+                                        data-tooltip="Porcentaje de descuento (0-100%)">
                                 </div>
                             </div>
                         </div>
@@ -174,15 +192,15 @@
                     <!-- Totales -->
                     <div class="totales-section">
                         <div class="total-row">
-                            <span>Subtotal:</span>
+                            <span><i class="fas fa-calculator"></i> Subtotal:</span>
                             <span id="subtotal">$ 0</span>
                         </div>
                         <div class="total-row">
-                            <span>Descuento Total:</span>
+                            <span><i class="fas fa-tag"></i> Descuento Total:</span>
                             <span id="descuento-total">$ 0</span>
                         </div>
                         <div class="total-row total-final">
-                            <span>TOTAL:</span>
+                            <span><i class="fas fa-file-invoice-dollar"></i> TOTAL:</span>
                             <span id="total-final">$ 0</span>
                         </div>
                     </div>
@@ -190,31 +208,37 @@
 
                 <!-- Información adicional (solo para PDF) -->
                 <div class="form-section pdf-only">
-                    <h3>Información Adicional (Solo PDF)</h3>
+                    <h3><i class="fas fa-file-pdf"></i> Información Adicional (Solo PDF)</h3>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="TELEFONO">Teléfono</label>
                             <input type="tel" id="TELEFONO" name="TELEFONO" 
-                                placeholder="Ej: 3106723072">
+                                placeholder="Ej: 3106723072"
+                                data-tooltip="Teléfono de contacto del paciente">
                         </div>
                         
                         <div class="form-group">
                             <label for="ADMISION">N° Admisión</label>
                             <input type="text" id="ADMISION" name="ADMISION" 
-                                placeholder="Número de admisión">
+                                placeholder="Número de admisión"
+                                data-tooltip="Número de admisión hospitalaria">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="DIRECCION">Dirección</label>
+                            <input type="text" id="DIRECCION" name="DIRECCION" 
+                                placeholder="Calle, número, barrio"
+                                data-tooltip="Dirección completa del paciente">
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="DIRECCION">DIRECCION</label>
-                            <input type="text" id="DIRECCION" name="DIRECCION" 
-                                placeholder="Calle, número, barrio">
-                        </div>
-                        
-                        <div class="form-group">
                             <label for="DEPARTAMENTO">Departamento</label>
-                            <select id="DEPARTAMENTO" name="DEPARTAMENTO" required>
+                            <select id="DEPARTAMENTO" name="DEPARTAMENTO" required
+                                data-tooltip="Departamento de residencia">
                                 <option value="">Seleccione un departamento...</option>
                                 <option value="Amazonas">Amazonas</option>
                                 <option value="Antioquia">Antioquia</option>
@@ -251,8 +275,9 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="CIUDAD">CIUDAD</label>
-                            <select id="CIUDAD" name="CIUDAD" required disabled>
+                            <label for="CIUDAD">Ciudad</label>
+                            <select id="CIUDAD" name="CIUDAD" required disabled
+                                data-tooltip="Ciudad de residencia">
                                 <option value="">Primero elija un departamento</option>
                             </select>
                         </div>
@@ -260,17 +285,19 @@
                     
                     <div class="form-row">
                         <div class="form-group full-width">
-                            <label for="OBSERVACION_GENERAL">Observación General (Para PDF) *</label>
+                            <label for="OBSERVACION_GENERAL" class="required">Observación General (Para PDF)</label>
                             <textarea id="OBSERVACION_GENERAL" name="OBSERVACION_GENERAL" rows="3" required 
-                                    placeholder="Esta observación aparecerá en el PDF"></textarea>
+                                    placeholder="Esta observación aparecerá en el PDF impreso"
+                                    data-tooltip="Observaciones que aparecerán en el documento PDF"></textarea>
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group full-width">
-                            <label for="AUTORIZADO_POR">Autorizado por: *</label>
+                            <label for="AUTORIZADO_POR" class="required">Autorizado por</label>
                             <input type="text" id="AUTORIZADO_POR" name="AUTORIZADO_POR" required 
-                                   placeholder="Nombre del autorizador">
+                                   placeholder="Nombre completo del autorizador"
+                                   data-tooltip="Persona que autoriza la cotización">
                         </div>
                     </div>
                 </div>
@@ -278,24 +305,39 @@
                 <!-- Botones de acción -->
                 <div class="action-buttons">
                     <button type="button" id="vaciarFormulario" class="btn btn-secondary">
-                        🗑️ Vaciar Todo
+                        <i class="fas fa-trash-alt"></i> Vaciar Todo
                     </button>
                     <button type="button" id="guardarImprimirBtn" class="btn btn-success">
-                        💾 Guardar + PDF
+                        <i class="fas fa-save"></i> Guardar + PDF
                     </button>
                     <button type="button" id="descargarPdfBtn" class="btn btn-primary" disabled>
-                        📥 Solo PDF
+                        <i class="fas fa-file-download"></i> Solo PDF
                     </button>
                 </div>
                 
                 <div id="responseMessage" class="response-message"></div>
+                
+                <!-- Instrucciones -->
+                <div class="form-section" style="background: #f0f7ff; border-left-color: #4dabf7; margin-top: 30px;">
+                    <h3><i class="fas fa-info-circle"></i> Instrucciones</h3>
+                    <div style="font-size: 0.9rem; color: #495057; line-height: 1.6;">
+                        <p><strong>1.</strong> Complete todos los campos marcados con * (obligatorios)</p>
+                        <p><strong>2.</strong> Agregue los productos/servicios con el botón "Agregar Producto"</p>
+                        <p><strong>3.</strong> "Guardar + PDF": Guarda en Google Sheets y genera PDF</p>
+                        <p><strong>4.</strong> "Solo PDF": Solo genera el documento sin guardar</p>
+                        <p><strong>5.</strong> "Vaciar Todo": Limpia completamente el formulario</p>
+                        <p style="margin-top: 10px; font-style: italic; color: #6c757d;">
+                            <i class="fas fa-exclamation-circle"></i> 
+                            La "Observación Adicional" solo se guarda en Google Sheets, no aparece en el PDF
+                        </p>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
-
 </html>
 
 
