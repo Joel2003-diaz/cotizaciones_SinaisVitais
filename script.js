@@ -666,9 +666,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // fincion para actualzar ciudades.
     function actualizarCiudades() {
         const dptoSeleccionado = dptoSelect.value;
+        console.log("Departamento detectado:", dptoSeleccionado);
 
         // Limpiar ciudades actuales
-        ciudadSelect.innerHTML = '<option value="">Seleccione ciudad...</option>';
+        ciudadSelect.innerHTML = '';
+        
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = dptoSeleccionado ? "Seleccione una ciudad..." : "Primero elija un departamento";
+        ciudadSelect.appendChild(defaultOption);
 
         if (dptoSeleccionado && ciudadesPorDepartamento[dptoSeleccionado]) {
             ciudadSelect.disabled = false;
@@ -678,6 +684,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 option.textContent = ciudad;
                 ciudadSelect.appendChild(option);
             });
+            console.log("Ciudades cargadas para:", dptoSeleccionado);
         } else {
             ciudadSelect.disabled = true;
             ciudadSelect.innerHTML = '<option value="">Elija un departamento</option>';
@@ -685,6 +692,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+
 
 
 
