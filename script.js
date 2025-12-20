@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     <div class="form-group">
                         <label for="VALOR_${productoIndex}">Valor Unitario *</label>
-                        <input type="number" class="valor-unitario" name="VALOR[]" min="0" step="1000" required 
+                        <input type="number" class="valor-unitario" name="VALOR[]" min="0" step="0.01" required 
                             placeholder="$" data-index="${productoIndex}">
                     </div>
                     
@@ -708,4 +708,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asegurarse de que el listener se haya configurado
     console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
 });
+
 
