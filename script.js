@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('cotizacionForm');
     const vaciarBtn = document.getElementById('vaciarFormulario');
     const guardarImprimirBtn = document.getElementById('guardarImprimirBtn');
-    const imprimirBtn = document.getElementById('imprimirBtn');
     const descargarPdfBtn = document.getElementById('descargarPdfBtn');
     const agregarProductoBtn = document.getElementById('agregarProductoBtn');
     const productosContainer = document.getElementById('productosContainer');
@@ -57,9 +56,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const descuentoTotalElement = document.getElementById('descuento-total');
     const totalFinalElement = document.getElementById('total-final');
 
-    // Configurar fecha actual
+    // CORREGIDO: Configurar fecha actual EN FORMATO LOCAL COLOMBIANO
     const today = new Date();
-    document.getElementById('FECHA_COTIZACION').value = today.toISOString().split('T')[0];
+    const colombiaOffset = -5 * 60; // Colombia está en UTC-5
+    const todayUTC = new Date(today.getTime() + (today.getTimezoneOffset() - colombiaOffset) * 60000);
+    
+    // Formatear como YYYY-MM-DD para el input date
+    const year = todayUTC.getFullYear();
+    const month = String(todayUTC.getMonth() + 1).padStart(2, '0');
+    const day = String(todayUTC.getDate()).padStart(2, '0');
+    const todayFormatted = `${year}-${month}-${day}`;
+    
+    document.getElementById('FECHA_COTIZACION').value = todayFormatted;
 
     // Valores por defecto
     document.getElementById('TIPO_DOCUMENTO').value = 'CC';
@@ -227,7 +235,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 ciudadSelect.disabled = true;
             }
             
-            document.getElementById('FECHA_COTIZACION').value = today.toISOString().split('T')[0];
+            // CORREGIDO: Restaurar fecha actual correctamente
+            document.getElementById('FECHA_COTIZACION').value = todayFormatted;
             document.getElementById('TIPO_DOCUMENTO').value = 'CC';
             document.getElementById('SEXO').value = 'M';
             
@@ -362,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para generar el contenido del PDF
+    // CORREGIDO: Función para generar el contenido del PDF - CON FECHA FIXED
     function generarContenidoPDF() {
         // Obtener valores directamente de los elementos del DOM
         const nConsecutivo = document.getElementById('N_CONSECUTIVO')?.value || '';
@@ -384,7 +393,21 @@ document.addEventListener('DOMContentLoaded', function() {
             maximumFractionDigits: 0 
         }).format(v);
         
-        const fecha = fechaCotizacion ? new Date(fechaCotizacion).toLocaleDateString('es-CO') : new Date().toLocaleDateString('es-CO');
+        // FIXED: Manejar fecha correctamente para evitar problemas de zona horaria
+        let fecha = '';
+        
+        if (fechaCotizacion) {
+            // Convertir YYYY-MM-DD a DD/MM/YYYY directamente sin pasar por Date()
+            const [year, month, day] = fechaCotizacion.split('-');
+            fecha = `${day}/${month}/${year}`;
+        } else {
+            // Si no hay fecha, usar la de hoy en formato colombiano
+            const hoy = new Date();
+            const day = String(hoy.getDate()).padStart(2, '0');
+            const month = String(hoy.getMonth() + 1).padStart(2, '0');
+            const year = hoy.getFullYear();
+            fecha = `${day}/${month}/${year}`;
+        }
         
         // Calcular totales para el PDF
         let subtotalPDF = 0;
@@ -708,5 +731,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asegurarse de que el listener se haya configurado
     console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
 });
+
 
 
