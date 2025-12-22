@@ -293,37 +293,44 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para guardar en Google Sheets
+    // FUNCIÓN CORREGIDA: Para guardar en Google Sheets - ENVIA EL TOTAL
     async function guardarEnGoogleSheets() {
         const productos = [];
         const productoElements = document.querySelectorAll('.producto-item');
         
-        productoElements.forEach((producto, index) => {
-            productos.push({
-                SERVICIO_COTIZADO: producto.querySelector('.servicio-cotizado').value,
-                CANTIDAD: producto.querySelector('.cantidad').value,
-                VALOR: producto.querySelector('.valor-unitario').value,
-                PORCENTAJE_DESCUENTO: producto.querySelector('.porcentaje-descuento').value
-            });
-        });
-        
-        // Obtener todos los valores de productos para concatenar
+        // Calcular el TOTAL como se muestra en el PDF
+        let subtotal = 0;
+        let descuentoTotal = 0;
         let serviciosConcatenados = '';
-        let valoresConcatenados = '';
         
         productoElements.forEach((producto, index) => {
+            const cantidad = parseFloat(producto.querySelector('.cantidad').value) || 0;
+            const valorUnitario = parseFloat(producto.querySelector('.valor-unitario').value) || 0;
+            const porcentajeDescuento = parseFloat(producto.querySelector('.porcentaje-descuento').value) || 0;
             const servicio = producto.querySelector('.servicio-cotizado').value;
-            const valor = producto.querySelector('.valor-unitario').value;
+            
+            const valorProducto = cantidad * valorUnitario;
+            const descuentoProducto = valorProducto * (porcentajeDescuento / 100);
+            
+            subtotal += valorProducto;
+            descuentoTotal += descuentoProducto;
+            
+            productos.push({
+                SERVICIO_COTIZADO: servicio,
+                CANTIDAD: cantidad,
+                VALOR: valorUnitario,
+                PORCENTAJE_DESCUENTO: porcentajeDescuento
+            });
             
             if (index > 0) {
                 serviciosConcatenados += ' | ';
-                valoresConcatenados += ' | ';
             }
             serviciosConcatenados += servicio;
-            valoresConcatenados += valor;
         });
         
-        // RECOGER TODOS LOS DATOS DEL FORMULARIO
+        const totalFinal = subtotal - descuentoTotal;
+        
+        // RECOGER TODOS LOS DATOS DEL FORMULARIO - ENVIAR EL TOTAL, NO LOS VALORES CONCATENADOS
         const datosParaEnviar = {
             N_CONSECUTIVO: document.getElementById('N_CONSECUTIVO').value,
             FECHA_COTIZACION: document.getElementById('FECHA_COTIZACION').value,
@@ -332,22 +339,25 @@ document.addEventListener('DOMContentLoaded', function() {
             NOMBRES: document.getElementById('NOMBRES').value,
             EMPRESA: document.getElementById('EMPRESA').value,
             ESPECIALIDAD: document.getElementById('ESPECIALIDAD').value,
-            SERVICIO_COTIZADO: serviciosConcatenados,
-            VALOR: valoresConcatenados,
+            SERVICIO_COTIZADO: serviciosConcatenados, // Concatenar servicios
+            VALOR: totalFinal, // ¡ENVIAR EL TOTAL, NO LOS VALORES CONCATENADOS!
             OBSERVACION_ADICIONAL: document.getElementById('OBSERVACION_ADICIONAL').value,
             PRODUCTOS_JSON: JSON.stringify(productos),
             OBSERVACION_GENERAL: document.getElementById('OBSERVACION_GENERAL').value,
-            // AÑADIR CAMPOS ADICIONALES PARA EVITAR EL ERROR
             TELEFONO: document.getElementById('TELEFONO')?.value || '',
             ADMISION: document.getElementById('ADMISION')?.value || '',
             DIRECCION: document.getElementById('DIRECCION')?.value || '',
             DEPARTAMENTO: document.getElementById('DEPARTAMENTO')?.value || '',
             CIUDAD: document.getElementById('CIUDAD')?.value || '',
             AUTORIZADO_POR: document.getElementById('AUTORIZADO_POR')?.value || '',
-            FECHA_REGISTRO: new Date().toISOString()
+            FECHA_REGISTRO: new Date().toISOString(),
+            // Añadir campos para subtotal y descuento si los necesitas
+            SUBTOTAL: subtotal,
+            DESCUENTO_TOTAL: descuentoTotal
         };
 
         console.log("Datos a enviar:", datosParaEnviar);
+        console.log("VALOR (TOTAL):", totalFinal);
 
         try {
             const params = new URLSearchParams();
@@ -371,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // CORREGIDO: Función para generar el contenido del PDF - CON FECHA FIXED
+    // CORREGIDO: Función para generar el contenido del PDF - CON MEJOR MANEJO DE ESPACIO
     function generarContenidoPDF() {
         // Obtener valores directamente de los elementos del DOM
         const nConsecutivo = document.getElementById('N_CONSECUTIVO')?.value || '';
@@ -442,39 +452,37 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const totalFinalPDF = subtotalPDF - descuentoTotalPDF;
         
-        // Generar HTML para el PDF
+        // Generar HTML para el PDF - CONTAINER CON ALTURA LIMITADA
         let tablaProductos = '';
         productosPDF.forEach(producto => {
             tablaProductos += `
                 <tr>
-                    <td style="border:1px solid #000; padding:3mm 2mm;">${producto.descripcion || ''}</td>
-                    <td style="border:1px solid #000; text-align:center; padding:3mm 2mm;">${producto.cantidad}</td>
-                    <td style="border:1px solid #000; text-align:right; padding:3mm 2mm;">$ ${moneda(producto.valorUnitario)}</td>
-                    <td style="border:1px solid #000; text-align:right; padding:3mm 2mm;">$ ${moneda(producto.descuentoProducto)}</td>
-                    <td style="border:1px solid #000; text-align:center; padding:3mm 2mm;">${producto.porcentajeDescuento}%</td>
-                    <td style="border:1px solid #000; text-align:right; padding:3mm 2mm;">$ ${moneda(producto.totalProducto)}</td>
+                    <td style="border:1px solid #000; padding:2mm 1mm; font-size:8pt;">${producto.descripcion || ''}</td>
+                    <td style="border:1px solid #000; text-align:center; padding:2mm 1mm; font-size:8pt;">${producto.cantidad}</td>
+                    <td style="border:1px solid #000; text-align:right; padding:2mm 1mm; font-size:8pt;">$ ${moneda(producto.valorUnitario)}</td>
+                    <td style="border:1px solid #000; text-align:right; padding:2mm 1mm; font-size:8pt;">$ ${moneda(producto.descuentoProducto)}</td>
+                    <td style="border:1px solid #000; text-align:center; padding:2mm 1mm; font-size:8pt;">${producto.porcentajeDescuento}%</td>
+                    <td style="border:1px solid #000; text-align:right; padding:2mm 1mm; font-size:8pt;">$ ${moneda(producto.totalProducto)}</td>
                 </tr>
             `;
         });
         
         return `
-            <div id="pdfContent" style="width:210mm; min-height:297mm; padding:15mm 20mm; box-sizing:border-box; font-family:Arial, sans-serif; font-size:9pt; color:#000; line-height:1.2;">
+            <div id="pdfContent" style="width:210mm; min-height:297mm; padding:10mm 15mm; box-sizing:border-box; font-family:Arial, sans-serif; font-size:9pt; color:#000; line-height:1.2;">
             
-                <!-- CABECERA CON LOGO -->
-                <table style="width:100%; border-collapse:collapse; border:1px solid #000; margin-bottom:10mm;">
+                <!-- CABECERA CON LOGO - REDUCIDA -->
+                <table style="width:100%; border-collapse:collapse; border:1px solid #000; margin-bottom:5mm; height:25mm;">
                     <tr>
-                        <!-- LOGO IZQUIERDA -->
-                        <td style="width:30%; border-right:1px solid #000; text-align:center; padding:5mm; vertical-align:middle;">
-                            <img src="${LOGO_PATH}" style="max-width:100%; max-height:40mm; object-fit:contain;" 
+                        <td style="width:30%; border-right:1px solid #000; text-align:center; padding:2mm; vertical-align:middle;">
+                            <img src="${LOGO_PATH}" style="max-width:100%; max-height:20mm; object-fit:contain;" 
                                  onerror="this.style.display='none'">
                         </td>
                         
-                        <!-- TEXTO CENTRAL -->
-                        <td style="width:40%; border-right:1px solid #000; padding:5mm; vertical-align:middle;">
-                            <div style="text-align:center; font-size:12pt; font-weight:bold; margin-bottom:3mm;">
+                        <td style="width:40%; border-right:1px solid #000; padding:2mm; vertical-align:middle;">
+                            <div style="text-align:center; font-size:10pt; font-weight:bold; margin-bottom:1mm;">
                                 COTIZACIONES
                             </div>
-                            <div style="text-align:center; font-size:9pt; line-height:1.3;">
+                            <div style="text-align:center; font-size:8pt; line-height:1.3;">
                                 CLINICA REGIONAL DE ESPECIALISTAS SINAIS VITAIS S.A.S<br>
                                 NIT. 900498069-1<br>
                                 CALLE 18 # 16 - 09 BOSCONIA CESAR<br>
@@ -482,101 +490,90 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </td>
                         
-                        <!-- DATOS DERECHA -->
-                        <td style="width:30%; padding:5mm; vertical-align:top; font-size:8pt;">
+                        <td style="width:30%; padding:2mm; vertical-align:top; font-size:7pt;">
                             <table style="width:100%;">
-                                <tr>
-                                    <td><strong>Código:</strong></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Versión:</strong></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Fecha:</strong></td>
-                                    <td>${fecha}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Página:</strong></td>
-                                    <td>1 de 1</td>
-                                </tr>
+                                <tr><td><strong>Código:</strong></td><td></td></tr>
+                                <tr><td><strong>Versión:</strong></td><td></td></tr>
+                                <tr><td><strong>Fecha:</strong></td><td>${fecha}</td></tr>
+                                <tr><td><strong>Página:</strong></td><td>1 de 1</td></tr>
                             </table>
                         </td>
                     </tr>
                 </table>
 
                 <!-- FECHA Y NÚMERO DE COTIZACIÓN -->
-                <div style="text-align:center; font-weight:bold; font-size:10pt; margin-bottom:8mm;">
+                <div style="text-align:center; font-weight:bold; font-size:9pt; margin-bottom:5mm;">
                     Fecha de Cotización: ${fecha} &nbsp;&nbsp; | &nbsp;&nbsp; N° Cotización: ${nConsecutivo}
                 </div>
 
-                <hr style="border:none; border-top:1px solid #000; margin-bottom:8mm;">
+                <hr style="border:none; border-top:1px solid #000; margin-bottom:5mm;">
 
-                <!-- DATOS DEL PACIENTE -->
-                <table style="width:100%; font-size:9pt; margin-bottom:10mm; border-collapse:collapse;">
-                <tr>
-                    <td style="width:50%; padding:1mm 0;"><strong>Señores:</strong> ${empresa}</td>
-                    <td style="width:50%; padding:1mm 0;"><strong>Admisión:</strong> ${admision}</td>
-                </tr>
-                <tr>
-                    <td style="padding:1mm 0;"><strong>Paciente:</strong> ${nombres}</td>
-                    <td style="padding:1mm 0;">
-                        <strong>CC:</strong> ${documento} &nbsp; 
-                        <strong>TD:</strong> ${tipoDocumento} &nbsp; 
-                        <strong>Sexo:</strong> ${sexo}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:1mm 0;"><strong>Dirección:</strong> ${direccion}</td>
-                    <td style="padding:1mm 0;">
-                        <strong>Depto:</strong> ${departamento} &nbsp; 
-                        <strong>Ciudad:</strong> ${ciudad}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:1mm 0;"><strong>Teléfono:</strong> ${telefono}</td>
-                    <td style="padding:1mm 0;"></td>
-                </tr>
+                <!-- DATOS DEL PACIENTE - COMPRIMIDO -->
+                <table style="width:100%; font-size:8pt; margin-bottom:5mm; border-collapse:collapse;">
+                    <tr>
+                        <td style="width:50%; padding:0.5mm 0;"><strong>Señores:</strong> ${empresa}</td>
+                        <td style="width:50%; padding:0.5mm 0;"><strong>Admisión:</strong> ${admision}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.5mm 0;"><strong>Paciente:</strong> ${nombres}</td>
+                        <td style="padding:0.5mm 0;">
+                            <strong>CC:</strong> ${documento} &nbsp; 
+                            <strong>TD:</strong> ${tipoDocumento} &nbsp; 
+                            <strong>Sexo:</strong> ${sexo}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.5mm 0;"><strong>Dirección:</strong> ${direccion}</td>
+                        <td style="padding:0.5mm 0;">
+                            <strong>Depto:</strong> ${departamento} &nbsp; 
+                            <strong>Ciudad:</strong> ${ciudad}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.5mm 0;"><strong>Teléfono:</strong> ${telefono}</td>
+                        <td style="padding:0.5mm 0;"></td>
+                    </tr>
                 </table>
 
-                <!-- TABLA DE PRODUCTOS -->
-                <table style="width:100%; border-collapse:collapse; font-size:9pt; margin-bottom:10mm;">
-                <thead>
-                <tr style="background:#f0f0f0;">
-                    <th style="border:1px solid #000; padding:3mm 2mm;">Descripción</th>
-                    <th style="border:1px solid #000; padding:3mm 2mm; width:10%;">Cantidad</th>
-                    <th style="border:1px solid #000; padding:3mm 2mm; width:15%;">Vr. Unitario</th>
-                    <th style="border:1px solid #000; padding:3mm 2mm; width:10%;">Vr. Desc</th>
-                    <th style="border:1px solid #000; padding:3mm 2mm; width:8%;">% Desc</th>
-                    <th style="border:1px solid #000; padding:3mm 2mm; width:12%;">Vr. Total</th>
-                </tr>
-                </thead>
-                <tbody>
-                ${tablaProductos}
-                </tbody>
-                </table>
+                <!-- TABLA DE PRODUCTOS CON ALTURA LIMITADA -->
+                <div style="max-height:130mm; overflow:hidden; margin-bottom:5mm;">
+                    <table style="width:100%; border-collapse:collapse; font-size:8pt;">
+                        <thead>
+                            <tr style="background:#f0f0f0;">
+                                <th style="border:1px solid #000; padding:2mm 1mm; font-size:8pt;">Descripción</th>
+                                <th style="border:1px solid #000; padding:2mm 1mm; width:8%; font-size:8pt;">Cantidad</th>
+                                <th style="border:1px solid #000; padding:2mm 1mm; width:12%; font-size:8pt;">Vr. Unitario</th>
+                                <th style="border:1px solid #000; padding:2mm 1mm; width:10%; font-size:8pt;">Vr. Desc</th>
+                                <th style="border:1px solid #000; padding:2mm 1mm; width:8%; font-size:8pt;">% Desc</th>
+                                <th style="border:1px solid #000; padding:2mm 1mm; width:12%; font-size:8pt;">Vr. Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tablaProductos}
+                        </tbody>
+                    </table>
+                </div>
 
-                <!-- OBSERVACIÓN -->
-                <div style="margin-bottom:10mm;">
-                    <div style="font-weight:bold; margin-bottom:2mm; font-size:10pt;">Observación</div>
-                    <div style="border:1px solid #000; padding:4mm; min-height:20mm;">
+                <!-- OBSERVACIÓN COMPRIMIDA -->
+                <div style="margin-bottom:5mm;">
+                    <div style="font-weight:bold; margin-bottom:1mm; font-size:9pt;">Observación</div>
+                    <div style="border:1px solid #000; padding:2mm; min-height:10mm; font-size:8pt;">
                         ${observacionGeneral}
                     </div>
                 </div>
 
                 <!-- TOTALES -->
-                <div style="text-align:right; font-size:10pt; margin-top:10mm;">
-                    <div style="margin-bottom:2mm;">Subtotal: $ ${moneda(subtotalPDF)}</div>
-                    <div style="margin-bottom:2mm;">Descuento: $ ${moneda(descuentoTotalPDF)}</div>
-                    <div style="font-size:12pt; font-weight:bold;">Total: $ ${moneda(totalFinalPDF)}</div>
+                <div style="text-align:right; font-size:9pt; margin-top:5mm;">
+                    <div style="margin-bottom:1mm;">Subtotal: $ ${moneda(subtotalPDF)}</div>
+                    <div style="margin-bottom:1mm;">Descuento: $ ${moneda(descuentoTotalPDF)}</div>
+                    <div style="font-size:10pt; font-weight:bold;">Total: $ ${moneda(totalFinalPDF)}</div>
                 </div>
 
-                <!-- FIRMA -->
-                <div style="margin-top:25mm;">
-                    <div style="width:250px; border-top:1px solid #000; padding-top:2mm; text-align:center;">
-                        <strong style="font-size:9pt;">Autorizado por:</strong><br>
-                        <span style="font-size:10pt; text-transform:uppercase;">${autorizadoPor}</span>
+                <!-- FIRMA - MÁS ESPACIO EN LA PARTE INFERIOR -->
+                <div style="position:absolute; bottom:15mm; left:15mm; width:250px;">
+                    <div style="border-top:1px solid #000; padding-top:2mm; text-align:center;">
+                        <strong style="font-size:8pt;">Autorizado por:</strong><br>
+                        <span style="font-size:9pt; text-transform:uppercase;">${autorizadoPor}</span>
                     </div>
                 </div>
 
@@ -731,6 +728,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asegurarse de que el listener se haya configurado
     console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
 });
-
-
-
