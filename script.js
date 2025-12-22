@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // FUNCIÓN CORREGIDA: Para guardar en Google Sheets - ENVIA EL TOTAL
+    // FUNCIÓN CORREGIDA: Para guardar en Google Sheets - SOLO CAMPOS REQUERIDOS
     async function guardarEnGoogleSheets() {
         const productos = [];
         const productoElements = document.querySelectorAll('.producto-item');
@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const totalFinal = subtotal - descuentoTotal;
         
-        // RECOGER TODOS LOS DATOS DEL FORMULARIO - ENVIAR EL TOTAL, NO LOS VALORES CONCATENADOS
+        // SOLO ENVIAR LOS CAMPOS REQUERIDOS
         const datosParaEnviar = {
             N_CONSECUTIVO: document.getElementById('N_CONSECUTIVO').value,
             FECHA_COTIZACION: document.getElementById('FECHA_COTIZACION').value,
@@ -339,25 +339,17 @@ document.addEventListener('DOMContentLoaded', function() {
             NOMBRES: document.getElementById('NOMBRES').value,
             EMPRESA: document.getElementById('EMPRESA').value,
             ESPECIALIDAD: document.getElementById('ESPECIALIDAD').value,
-            SERVICIO_COTIZADO: serviciosConcatenados, // Concatenar servicios
-            VALOR: totalFinal, // ¡ENVIAR EL TOTAL, NO LOS VALORES CONCATENADOS!
-            OBSERVACION_ADICIONAL: document.getElementById('OBSERVACION_ADICIONAL').value,
-            PRODUCTOS_JSON: JSON.stringify(productos),
+            SERVICIO_COTIZADO: serviciosConcatenados,
+            VALOR: totalFinal, // SOLO EL TOTAL
             OBSERVACION_GENERAL: document.getElementById('OBSERVACION_GENERAL').value,
-            TELEFONO: document.getElementById('TELEFONO')?.value || '',
-            ADMISION: document.getElementById('ADMISION')?.value || '',
-            DIRECCION: document.getElementById('DIRECCION')?.value || '',
-            DEPARTAMENTO: document.getElementById('DEPARTAMENTO')?.value || '',
-            CIUDAD: document.getElementById('CIUDAD')?.value || '',
-            AUTORIZADO_POR: document.getElementById('AUTORIZADO_POR')?.value || '',
-            FECHA_REGISTRO: new Date().toISOString(),
-            // Añadir campos para subtotal y descuento si los necesitas
-            SUBTOTAL: subtotal,
-            DESCUENTO_TOTAL: descuentoTotal
+            OBSERVACION_ADICIONAL: document.getElementById('OBSERVACION_ADICIONAL').value,
+            AUTORIZADO_POR: document.getElementById('AUTORIZADO_POR').value || '', // IMPORTANTE: Este se mapea a AUTORIZADOR en GS
+            // NO ENVIAR: TELEFONO, ADMISION, DIRECCION, DEPARTAMENTO, CIUDAD, etc.
         };
 
-        console.log("Datos a enviar:", datosParaEnviar);
+        console.log("Datos a enviar (solo campos requeridos):", datosParaEnviar);
         console.log("VALOR (TOTAL):", totalFinal);
+        console.log("AUTORIZADO_POR:", datosParaEnviar.AUTORIZADO_POR);
 
         try {
             const params = new URLSearchParams();
@@ -374,6 +366,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             if (!response.ok) throw new Error('Error en la respuesta del servidor');
+            
+            const result = await response.json();
+            console.log("Respuesta de Google Sheets:", result);
+            
             return true;
             
         } catch (error) {
