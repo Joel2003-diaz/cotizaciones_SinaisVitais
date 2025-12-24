@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // FUNCIÓN CORREGIDA: Para guardar en Google Sheets - SOLO CAMPOS REQUERIDOS
+    // ✅ FUNCIÓN CORREGIDA: Para guardar en Google Sheets
     async function guardarEnGoogleSheets() {
         const productos = [];
         const productoElements = document.querySelectorAll('.producto-item');
@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const totalFinal = subtotal - descuentoTotal;
         
-        // SOLO ENVIAR LOS CAMPOS REQUERIDOS
+        // ✅ CORRECCIÓN CRÍTICA: Añadido ?. para prevenir error "Cannot read properties of null"
         const datosParaEnviar = {
             N_CONSECUTIVO: document.getElementById('N_CONSECUTIVO').value,
             FECHA_COTIZACION: document.getElementById('FECHA_COTIZACION').value,
@@ -340,14 +340,16 @@ document.addEventListener('DOMContentLoaded', function() {
             EMPRESA: document.getElementById('EMPRESA').value,
             ESPECIALIDAD: document.getElementById('ESPECIALIDAD').value,
             SERVICIO_COTIZADO: serviciosConcatenados,
-            VALOR: totalFinal, // SOLO EL TOTAL
+            VALOR: totalFinal,
             OBSERVACION_GENERAL: document.getElementById('OBSERVACION_GENERAL').value,
             OBSERVACION_ADICIONAL: document.getElementById('OBSERVACION_ADICIONAL').value,
-            AUTORIZADOR: document.getElementById('AUTORIZADO_POR')?.value || '', 
+            AUTORIZADOR: document.getElementById('AUTORIZADO_POR')?.value || '', // ✅ CORREGIDO AQUÍ
+        };
 
-        console.log("Datos a enviar (solo campos requeridos):", datosParaEnviar);
-        console.log("VALOR (TOTAL):", totalFinal);
+        console.log("🔍 === DATOS A ENVIAR A GOOGLE SHEETS ===");
         console.log("AUTORIZADOR:", datosParaEnviar.AUTORIZADOR);
+        console.log("Todos los datos:", datosParaEnviar);
+        console.log("VALOR TOTAL:", totalFinal);
 
         try {
             const params = new URLSearchParams();
@@ -355,6 +357,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 params.append(key, datosParaEnviar[key]);
             });
 
+            console.log("📤 Enviando datos a:", GOOGLE_SCRIPT_URL);
+            
             const response = await fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 headers: {
@@ -363,19 +367,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: params.toString()
             });
 
-            if (!response.ok) throw new Error('Error en la respuesta del servidor');
+            if (!response.ok) {
+                console.error("❌ Error HTTP:", response.status, response.statusText);
+                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            }
             
             const result = await response.json();
-            console.log("Respuesta de Google Sheets:", result);
+            console.log("✅ Respuesta de Google Sheets:", result);
             
             return true;
             
         } catch (error) {
+            console.error("❌ Error completo al guardar:", error);
             throw new Error('No se pudo guardar en Google Sheets: ' + error.message);
         }
     }
 
-    // CORREGIDO: Función para generar el contenido del PDF - CON MEJOR MANEJO DE ESPACIO
+    // Función para generar el contenido del PDF
     function generarContenidoPDF() {
         // Obtener valores directamente de los elementos del DOM
         const nConsecutivo = document.getElementById('N_CONSECUTIVO')?.value || '';
@@ -397,15 +405,13 @@ document.addEventListener('DOMContentLoaded', function() {
             maximumFractionDigits: 0 
         }).format(v);
         
-        // FIXED: Manejar fecha correctamente para evitar problemas de zona horaria
+        // Manejar fecha correctamente
         let fecha = '';
         
         if (fechaCotizacion) {
-            // Convertir YYYY-MM-DD a DD/MM/YYYY directamente sin pasar por Date()
             const [year, month, day] = fechaCotizacion.split('-');
             fecha = `${day}/${month}/${year}`;
         } else {
-            // Si no hay fecha, usar la de hoy en formato colombiano
             const hoy = new Date();
             const day = String(hoy.getDate()).padStart(2, '0');
             const month = String(hoy.getMonth() + 1).padStart(2, '0');
@@ -446,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const totalFinalPDF = subtotalPDF - descuentoTotalPDF;
         
-        // Generar HTML para el PDF - CONTAINER CON ALTURA LIMITADA
+        // Generar HTML para el PDF
         let tablaProductos = '';
         productosPDF.forEach(producto => {
             tablaProductos += `
@@ -464,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return `
             <div id="pdfContent" style="width:210mm; min-height:297mm; padding:10mm 15mm; box-sizing:border-box; font-family:Arial, sans-serif; font-size:9pt; color:#000; line-height:1.2;">
             
-                <!-- CABECERA CON LOGO - REDUCIDA -->
+                <!-- CABECERA CON LOGO -->
                 <table style="width:100%; border-collapse:collapse; border:1px solid #000; margin-bottom:5mm; height:25mm;">
                     <tr>
                         <td style="width:30%; border-right:1px solid #000; text-align:center; padding:2mm; vertical-align:middle;">
@@ -502,7 +508,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <hr style="border:none; border-top:1px solid #000; margin-bottom:5mm;">
 
-                <!-- DATOS DEL PACIENTE - COMPRIMIDO -->
+                <!-- DATOS DEL PACIENTE -->
                 <table style="width:100%; font-size:8pt; margin-bottom:5mm; border-collapse:collapse;">
                     <tr>
                         <td style="width:50%; padding:0.5mm 0;"><strong>Señores:</strong> ${empresa}</td>
@@ -529,7 +535,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </tr>
                 </table>
 
-                <!-- TABLA DE PRODUCTOS CON ALTURA LIMITADA -->
+                <!-- TABLA DE PRODUCTOS -->
                 <div style="max-height:130mm; overflow:hidden; margin-bottom:5mm;">
                     <table style="width:100%; border-collapse:collapse; font-size:8pt;">
                         <thead>
@@ -548,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </table>
                 </div>
 
-                <!-- OBSERVACIÓN COMPRIMIDA -->
+                <!-- OBSERVACIÓN -->
                 <div style="margin-bottom:5mm;">
                     <div style="font-weight:bold; margin-bottom:1mm; font-size:9pt;">Observación</div>
                     <div style="border:1px solid #000; padding:2mm; min-height:10mm; font-size:8pt;">
@@ -563,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div style="font-size:10pt; font-weight:bold;">Total: $ ${moneda(totalFinalPDF)}</div>
                 </div>
 
-                <!-- FIRMA - MÁS ESPACIO EN LA PARTE INFERIOR -->
+                <!-- FIRMA -->
                 <div style="position:absolute; bottom:15mm; left:15mm; width:250px;">
                     <div style="border-top:1px solid #000; padding-top:2mm; text-align:center;">
                         <strong style="font-size:8pt;">Autorizado por:</strong><br>
@@ -722,6 +728,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asegurarse de que el listener se haya configurado
     console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
 });
+
 
 
 
