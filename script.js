@@ -579,13 +579,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div style="font-size:10pt; font-weight:bold;">Total: $ ${moneda(totalFinalPDF)}</div>
                 </div>
 
-                <!-- FIRMA DEL AUTORIZADOR (PARTE INFERIOR IZQUIERDA) -->
-                <div style="position:absolute; bottom:20mm; left:15mm; width:70mm; border-top:1px solid #000; padding-top:2mm;">
+                <!-- FIRMA DEL AUTORIZADOR (PARTE INFERIOR IZQUIERDA) - SOLO EL NOMBRE -->
+                <div style="position:absolute; bottom:20mm; left:15mm; width:70mm;">
                     <div style="text-align:center; font-size:9pt;">
                         <strong>Autorizado por:</strong><br>
-                        <span style="font-size:10pt; text-transform:uppercase; font-weight:bold;">${autorizadoPor}</span><br>
-                        <span style="font-size:8pt; margin-top:5mm;">_________________________</span><br>
-                        <span style="font-size:7pt;">(Cliente)</span>
+                        <span style="font-size:10pt; text-transform:uppercase; font-weight:bold;">${autorizadoPor}</span>
                     </div>
                 </div>
 
@@ -753,3 +751,4 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('✅ Campo AUTORIZADOR encontrado');
     }
 });
+
