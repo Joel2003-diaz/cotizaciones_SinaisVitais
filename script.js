@@ -573,7 +573,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div style="position:absolute; bottom:15mm; left:15mm; width:250px;">
                     <div style="border-top:1px solid #000; padding-top:2mm; text-align:center;">
                         <strong style="font-size:8pt;">Autorizado por:</strong><br>
-                        <span style="font-size:9pt; text-transform:uppercase;">${autorizadoPor}</span>
+                        <span style="font-size:9pt; text-transform:uppercase;">${autorizadoPor}</span><br>
+                        <span style="font-size:7pt; color:#555;">Tu Nombre - Gerente de Ventas</span>
                     </div>
                 </div>
 
@@ -728,6 +729,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asegurarse de que el listener se haya configurado
     console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
 });
+
 
 
 
