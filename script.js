@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const responseDiv = document.getElementById('responseMessage');
     const dptoSelect = document.getElementById('DEPARTAMENTO');
     const ciudadSelect = document.getElementById('CIUDAD');
+    const autorizadorInput = document.getElementById('AUTORIZADOR'); // CAMBIADO A AUTORIZADOR
     
     // Elementos de totales
     const subtotalElement = document.getElementById('subtotal');
@@ -330,7 +331,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const totalFinal = subtotal - descuentoTotal;
         
-        // ✅ CORRECCIÓN CRÍTICA: Añadido ?. para prevenir error "Cannot read properties of null"
+        // ✅ Obtener el autorizador de forma segura - CAMBIADO A AUTORIZADOR
+        const autorizadorElement = document.getElementById('AUTORIZADOR');
+        const autorizador = autorizadorElement ? autorizadorElement.value : '';
+        
         const datosParaEnviar = {
             N_CONSECUTIVO: document.getElementById('N_CONSECUTIVO').value,
             FECHA_COTIZACION: document.getElementById('FECHA_COTIZACION').value,
@@ -343,11 +347,11 @@ document.addEventListener('DOMContentLoaded', function() {
             VALOR: totalFinal,
             OBSERVACION_GENERAL: document.getElementById('OBSERVACION_GENERAL').value,
             OBSERVACION_ADICIONAL: document.getElementById('OBSERVACION_ADICIONAL').value,
-            AUTORIZADOR: document.getElementById('AUTORIZADO_POR')?.value || '',
+            AUTORIZADOR: autorizador, // CAMBIADO A AUTORIZADOR
         };
 
         console.log("🔍 === DATOS A ENVIAR A GOOGLE SHEETS ===");
-        console.log("AUTORIZADOR:", datosParaEnviar.AUTORIZADOR);
+        console.log("AUTORIZADOR:", autorizador);
         console.log("Todos los datos:", datosParaEnviar);
         console.log("VALOR TOTAL:", totalFinal);
 
@@ -400,7 +404,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const telefono = document.getElementById('TELEFONO')?.value || '';
         const observacionGeneral = document.getElementById('OBSERVACION_GENERAL')?.value || '';
         const observacionAdicional = document.getElementById('OBSERVACION_ADICIONAL')?.value || '';
-        const autorizadoPor = document.getElementById('AUTORIZADO_POR')?.value || '';
+        
+        // OBTENER AUTORIZADOR DE FORMA CORRECTA - CAMBIADO A AUTORIZADOR
+        const autorizadorElement = document.getElementById('AUTORIZADOR');
+        const autorizadoPor = autorizadorElement ? autorizadorElement.value : '';
+        
+        console.log("📝 Nombre del autorizador obtenido para PDF:", autorizadoPor);
         
         const moneda = v => new Intl.NumberFormat('es-CO', { 
             maximumFractionDigits: 0 
@@ -572,9 +581,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <!-- FIRMA DEL AUTORIZADOR (PARTE INFERIOR IZQUIERDA) -->
                 <div style="position:absolute; bottom:20mm; left:15mm; width:70mm; border-top:1px solid #000; padding-top:2mm;">
-                    <div style="text-align:center; font-size:8pt;">
+                    <div style="text-align:center; font-size:9pt;">
                         <strong>Autorizado por:</strong><br>
-                        <span style="font-size:9pt; text-transform:uppercase;">${autorizadoPor}</span><br>
+                        <span style="font-size:10pt; text-transform:uppercase; font-weight:bold;">${autorizadoPor}</span><br>
+                        <span style="font-size:8pt; margin-top:5mm;">_________________________</span><br>
                         <span style="font-size:7pt;">(Cliente)</span>
                     </div>
                 </div>
@@ -592,6 +602,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             mostrarMensaje('info', '⏳ Generando PDF...');
+            
+            // Verificar si el autorizador está vacío
+            const autorizadorElement = document.getElementById('AUTORIZADOR'); // CAMBIADO A AUTORIZADOR
+            if (autorizadorElement && !autorizadorElement.value.trim()) {
+                if (!confirm('⚠️ El campo "Autorizado por" está vacío. ¿Desea continuar sin el nombre del autorizador?')) {
+                    autorizadorElement.focus();
+                    return;
+                }
+            }
             
             // Crear elemento temporal
             const tempDiv = document.createElement('div');
@@ -727,6 +746,10 @@ document.addEventListener('DOMContentLoaded', function() {
     calcularTotales();
     mostrarMensaje('info', 'Complete los campos obligatorios (*) para generar la cotización');
 
-    // Asegurarse de que el listener se haya configurado
-    console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
+    // Verificar que el campo autorizador existe
+    if (!document.getElementById('AUTORIZADOR')) {
+        console.warn('⚠️ Campo AUTORIZADOR no encontrado en el HTML');
+    } else {
+        console.log('✅ Campo AUTORIZADOR encontrado');
+    }
 });
