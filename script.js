@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
             VALOR: totalFinal,
             OBSERVACION_GENERAL: document.getElementById('OBSERVACION_GENERAL').value,
             OBSERVACION_ADICIONAL: document.getElementById('OBSERVACION_ADICIONAL').value,
-            AUTORIZADOR: document.getElementById('AUTORIZADO_POR')?.value || '', // ✅ CORREGIDO AQUÍ
+            AUTORIZADOR: document.getElementById('AUTORIZADO_POR')?.value || '',
         };
 
         console.log("🔍 === DATOS A ENVIAR A GOOGLE SHEETS ===");
@@ -399,6 +399,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const ciudad = document.getElementById('CIUDAD')?.value || '';
         const telefono = document.getElementById('TELEFONO')?.value || '';
         const observacionGeneral = document.getElementById('OBSERVACION_GENERAL')?.value || '';
+        const observacionAdicional = document.getElementById('OBSERVACION_ADICIONAL')?.value || '';
         const autorizadoPor = document.getElementById('AUTORIZADO_POR')?.value || '';
         
         const moneda = v => new Intl.NumberFormat('es-CO', { 
@@ -577,6 +578,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span style="font-size:7pt;">(Cliente)</span>
                     </div>
                 </div>
+
             </div>
         `;
     }
@@ -728,11 +730,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asegurarse de que el listener se haya configurado
     console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
 });
-
-
-
-
-
-
-
-
