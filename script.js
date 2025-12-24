@@ -15,7 +15,7 @@ const ciudadesPorDepartamento = {
     "Caquetá": ["Florencia", "Belén de los Andaquíes"],
     "Casanare": ["Yopal", "Aguazul", "Tauramena"],
     "Cauca": ["Popayán", "Santander de Quilichao", "Puerto Tejada"],
-    "Cesar": ["Valledupar", "Aguachica", "Codazzi", "La Paz", "Bosconia", "Curumaní"],
+    "Cesar": ["Valledupar", "Aguachica", "Codazzi", "La Paz", "Bosconia", "Curumaní","El copey","La jagua de ibirico","El paso","San martin"],
     "Chocó": ["Quibdó", "Istmina", "Tadó"],
     "Córdoba": ["Montería", "Cereté", "Sahagún", "Lorica"],
     "Cundinamarca": ["Soacha", "Chía", "Zipaquirá", "Facatativá", "Girardot", "Fusagasugá"],
@@ -23,7 +23,7 @@ const ciudadesPorDepartamento = {
     "Guaviare": ["San José del Guaviare"],
     "Huila": ["Neiva", "Pitalito", "Garzón", "La Plata"],
     "La Guajira": ["Riohacha", "Maicao", "Uribia", "Manaure"],
-    "Magdalena": ["Santa Marta", "Ciénaga", "Fundación", "Aracataca", "El Banco"],
+    "Magdalena": ["Santa Marta", "Ciénaga", "Fundación", "Aracataca", "El Banco","Algarrobo","Ariguani"],
     "Meta": ["Villavicencio", "Acacías", "Granada"],
     "Nariño": ["Pasto", "Tumaco", "Ipiales"],
     "Norte de Santander": ["Cúcuta", "Ocaña", "Pamplona"],
@@ -724,3 +724,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asegurarse de que el listener se haya configurado
     console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
 });
+
