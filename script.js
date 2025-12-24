@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
             VALOR: totalFinal, // SOLO EL TOTAL
             OBSERVACION_GENERAL: document.getElementById('OBSERVACION_GENERAL').value,
             OBSERVACION_ADICIONAL: document.getElementById('OBSERVACION_ADICIONAL').value,
-            AUTORIZADO_POR: document.getElementById('AUTORIZADO_POR').value || '', // IMPORTANTE: Este se mapea a AUTORIZADOR en GS
+            AUTORIZADOR: document.getElementById('AUTORIZADO_POR').value || '', // IMPORTANTE: Este se mapea a AUTORIZADOR en GS
             // NO ENVIAR: TELEFONO, ADMISION, DIRECCION, DEPARTAMENTO, CIUDAD, etc.
         };
 
@@ -724,4 +724,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asegurarse de que el listener se haya configurado
     console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
 });
+
 
