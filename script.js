@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         console.log("Datos a enviar (solo campos requeridos):", datosParaEnviar);
         console.log("VALOR (TOTAL):", totalFinal);
-        console.log("AUTORIZADO_POR:", datosParaEnviar.AUTORIZADO_POR);
+        console.log("AUTORIZADOR:", datosParaEnviar.AUTORIZADOR);
 
         try {
             const params = new URLSearchParams();
@@ -724,5 +724,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asegurarse de que el listener se haya configurado
     console.log("Script cargado correctamente. Departamento select encontrado:", !!dptoSelect);
 });
+
 
 
