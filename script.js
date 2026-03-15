@@ -18,7 +18,7 @@ const ciudadesPorDepartamento = {
     "Cesar": ["Valledupar", "Aguachica", "Codazzi", "La Paz", "Bosconia", "Curumaní","El copey","La jagua de ibirico","El paso","San martin"],
     "Chocó": ["Quibdó", "Istmina", "Tadó"],
     "Córdoba": ["Montería", "Cereté", "Sahagún", "Lorica"],
-    "Cundinamarca": ["Soacha", "Chía", "Zipaquirá", "Facatativá", "Girardot", "Fusagasugá"],
+    "Cundinamarca": ["Soacha", "Chía", "Zipaquirá", "Facatativá", "Girardot", "Fusagasugá", "BOGOTA D.C"],
     "Guainía": ["Inírida"],
     "Guaviare": ["San José del Guaviare"],
     "Huila": ["Neiva", "Pitalito", "Garzón", "La Plata"],
