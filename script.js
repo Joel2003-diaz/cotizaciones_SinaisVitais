@@ -15,7 +15,7 @@ const ciudadesPorDepartamento = {
     "Caquetá": ["Florencia", "Belén de los Andaquíes"],
     "Casanare": ["Yopal", "Aguazul", "Tauramena"],
     "Cauca": ["Popayán", "Santander de Quilichao", "Puerto Tejada"],
-    "Cesar": ["Valledupar", "Aguachica", "Codazzi", "La Paz", "Bosconia", "Curumaní","El copey","La jagua de ibirico","El paso","San martin"],
+    "Cesar": ["Valledupar", "Aguachica", "Codazzi", "La Paz", "Bosconia", "Curumaní","El copey","La jagua de ibirico","El paso","San martin","Astrea"],
     "Chocó": ["Quibdó", "Istmina", "Tadó"],
     "Córdoba": ["Montería", "Cereté", "Sahagún", "Lorica"],
     "Cundinamarca": ["Soacha", "Chía", "Zipaquirá", "Facatativá", "Girardot", "Fusagasugá", "BOGOTA D.C"],
