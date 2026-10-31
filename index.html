@@ -3,349 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Cotizaciones - Clínica Sinais Vitais</title>
+    <title>Cotizaciones - Clínica Sinais Vitais</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Solo formulario (sin vista previa) -->
-        <div class="form-container">
-            <!-- Logo (opcional) -->
-            <div class="logo-container">
-                <img src="logo.jpg" alt="Logo Clínica Sinais Vitais" class="logo" onerror="this.style.display='none'">
+
+<header class="app-header">
+    <div class="app-header__inner">
+        <div class="brand">
+            <img src="logo.jpg" alt="" class="brand__logo" onerror="this.style.display='none'">
+            <div>
+                <p class="brand__name">Clínica Sinais Vitais</p>
+                <p class="brand__sub">Generador de cotizaciones</p>
             </div>
-            
-            <h1 class="main-title"><i class="fas fa-file-invoice-dollar"></i> Generador de Cotizaciones</h1>
-            <h2 class="section-title">Clínica Regional de Especialistas Sinais Vitais S.A.S</h2>
-            
-            <form id="cotizacionForm" novalidate>
-                <!-- Información básica (para Google Sheets) -->
-                <div class="form-section">
-                    <h3><i class="fas fa-info-circle"></i> Información Principal</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="N_CONSECUTIVO" class="required">N° Cotización</label>
-                            <input type="number" id="N_CONSECUTIVO" name="N_CONSECUTIVO" required 
-                                placeholder="Ej: 1524" maxlength="10"
-                                data-tooltip="Número único de cotización">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="FECHA_COTIZACION" class="required">Fecha</label>
-                            <input type="date" id="FECHA_COTIZACION" name="FECHA_COTIZACION" required
-                                data-tooltip="Fecha de la cotización">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="TIPO_DOCUMENTO" class="required">Tipo Documento</label>
-                            <select id="TIPO_DOCUMENTO" name="TIPO_DOCUMENTO" required
-                                data-tooltip="Tipo de documento del paciente">
-                                <option value="NIT">Número de Identificación Tributaria (NIT)</option>
-                                <option value="CC">Cédula de Ciudadanía (CC)</option>
-                                <option value="TI">Tarjeta de Identidad (TI)</option>
-                                <option value="CE">Cédula de Extranjería (CE)</option>
-                                <option value="PT">Permiso por protección temporal (PT)</option>
-                                <option value="RC">Registro Civil (RC)</option>
-                                <option value="CN">Nacido vivo</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="DOCUMENTO" class="required">N° Documento</label>
-                            <input type="number" id="DOCUMENTO" name="DOCUMENTO" required 
-                                placeholder="Número de documento"
-                                data-tooltip="Número de documento del paciente">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="NOMBRES" class="required">Nombres Paciente</label>
-                            <input type="text" id="NOMBRES" name="NOMBRES" required 
-                                placeholder="Apellidos y Nombres"
-                                data-tooltip="Nombre completo del paciente">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="SEXO" class="required">Sexo</label>
-                            <select id="SEXO" name="SEXO" required
-                                data-tooltip="Sexo del paciente">
-                                <option value="M">Masculino (M)</option>
-                                <option value="F">Femenino (F)</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="EMPRESA" class="required">Empresa/EPS</label>
-                            <select id="EMPRESA" name="EMPRESA" required
-                                data-tooltip="Entidad a la que pertenece el paciente">
-                                <option value="">Selecciona una EPS</option>
-                                <option value="DUSAKAWI EPS-I">DUSAKAWI EPS-I</option>
-                                <option value="ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S">ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S</option>
-                                <option value="EPS SURAMERICANA S.A">EPS SURAMERICANA S.A</option>
-                                <option value="COLMENA RIESGOS PROFESIONALES S.A.">COLMENA RIESGOS PROFESIONALES S.A.</option>
-                                <option value="FIDEICOMISOS PATRIMONIOS AUTONÓMOS FIDUCIARIA LA PREVISORA S.A.">FIDEICOMISOS PATRIMONIOS AUTONÓMOS FIDUCIARIA LA PREVISORA S.A.</option>
-                                <option value="GOBERNACION DEL CESAR (SEC DE SALUD)">GOBERNACION DEL CESAR (SEC DE SALUD)</option>
-                                <option value="AXA COLPATRIA SEGUROS DE VIDA S.A">AXA COLPATRIA SEGUROS DE VIDA S.A</option>
-                                <option value="EPS Familiar De Colombia S.A.S">EPS Familiar De Colombia S.A.S</option>
-                                <option value="SUMIMEDICAL SAS">SUMIMEDICAL SAS</option>
-                                <option value="MUTUAL SER">MUTUAL SER</option>
-                                <option value="PARTICULAR">PARTICULAR</option>
-                                <option value="ASMET SALUD">ASMET SALUD</option>
-                                <option value="COOSALUD ENTIDAD PROMOTORA DE SALUD S.A">COOSALUD ENTIDAD PROMOTORA DE SALUD S.A</option>
-                                <option value="SALUD TOTAL EPS - S.SA.">SALUD TOTAL EPS - S.SA.</option>
-                                <option value="PROTEGER EPS S.A.S.">PROTEGER EPS S.A.S.</option>
-                                <option value="NUEVA EPS">NUEVA EPS</option>
-                                <option value="REGIONAL DE ASEGURAMIENTO Nº 8">REGIONAL DE ASEGURAMIENTO Nº 8</option>
-                                <option value="POSITIVA COMPAÑÍA DE SEGUROS S.A. (ARL)">POSITIVA COMPAÑÍA DE SEGUROS S.A. (ARL)</option>
-                                <option value="CAPITAL SALUD EPS-S">CAPITAL SALUD EPS-S</option>
-                                <option value="SAVIA SALUD">SAVIA SALUD</option>
-                                <option value=" EPS FAMISANAR SAS"> EPS FAMISANAR SAS</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="ESPECIALIDAD" class="required">Especialidad</label>
-                            <select id="ESPECIALIDAD" name="ESPECIALIDAD" required
-                                data-tooltip="Especialidad médica requerida">
-                                <option value="">Selecciona una especialidad</option>
-                                <option value="CIRUGIA MAXILOFACIAL">CIRUGIA MAXILOFACIAL</option>
-                                <option value="ORTOPEDIA">ORTOPEDIA</option>
-                                <option value="CIRUGIA PLASTICA">CIRUGIA PLASTICA</option>
-                                <option value="NEUROCIRUGIA">NEUROCIRUGIA</option>
-                                <option value="CIRUGIA DE TORAX">CIRUGIA DE TORAX</option>
-                                <option value="CIRUGIA GENERAL">CIRUGIA GENERAL</option>
-                                <option value="GASTROENTEROLOGIA">GASTROENTEROLOGIA</option>
-                                <option value="UROLOGIA">UROLOGIA</option>
-                                <option value="GINECOLOGIA">GINECOLOGIA</option>
-                                <option value="INTENSIVISTA">INTENSIVISTA</option>
-                                <option value="MEDICINA INTERNA">MEDICINA INTERNA</option>
-                                <option value="RADIOLOGÍA INTERVENCIONISTA">RADIOLOGÍA INTERVENCIONISTA</option>
-                                <option value="NEONATOLOGIA">NEONATOLOGIA</option>
-                                <option value="PEDIATRIA">PEDIATRIA</option>
-                                <option value="MEDICINA INTERNA">MEDICINA INTERNA</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <!-- OBSERVACIÓN ADICIONAL (SOLO GOOGLE SHEETS) -->
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label for="OBSERVACION_ADICIONAL">Observación Adicional (Solo para Google Sheets)</label>
-                            <textarea id="OBSERVACION_ADICIONAL" name="OBSERVACION_ADICIONAL" rows="2" 
-                                    placeholder="Esta observación solo se guardará en Google Sheets, no aparecerá en el PDF"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PRODUCTOS / SERVICIOS -->
-                <div class="form-section" id="productosSection">
-                    <div class="section-header">
-                        <h3><i class="fas fa-boxes"></i> Productos / Servicios</h3>
-                        <button type="button" id="agregarProductoBtn" class="btn btn-success btn-sm">
-                            <i class="fas fa-plus-circle"></i> Agregar Producto
-                        </button>
-                    </div>
-                    
-                    <div id="productosContainer">
-                        <!-- Producto 1 -->
-                        <div class="producto-item" data-index="0">
-                            <div class="producto-header">
-                                <span><i class="fas fa-cube"></i> Producto #1</span>
-                                <button type="button" class="btn-eliminar-producto btn-danger btn-sm" data-index="0"
-                                        data-tooltip="Eliminar este producto">
-                                    <i class="fas fa-trash-alt"></i> Eliminar
-                                </button>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group full-width">
-                                    <label for="SERVICIO_COTIZADO_0" class="required">Descripción</label>
-                                    <input type="text" class="servicio-cotizado" name="SERVICIO_COTIZADO[]" required 
-                                        placeholder="Descripción detallada del servicio" data-index="0">
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="CANTIDAD_0" class="required">Cantidad</label>
-                                    <input type="number" class="cantidad" name="CANTIDAD[]" min="1" value="1" required 
-                                        placeholder="Cantidad" data-index="0"
-                                        data-tooltip="Cantidad de unidades">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="VALOR_0" class="required">Valor Unitario</label>
-                                    <input type="number" class="valor-unitario" name="VALOR[]" min="0" step="0.01" required 
-                                        placeholder="$" data-index="0"
-                                        data-tooltip="Valor por unidad">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="PORCENTAJE_DESCUENTO_0" class="required">% Descuento</label>
-                                    <input type="number" class="porcentaje-descuento" name="PORCENTAJE_DESCUENTO[]" 
-                                        min="0" max="100" step="0.1" value="0" required data-index="0"
-                                        data-tooltip="Porcentaje de descuento (0-100%)">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Totales -->
-                    <div class="totales-section">
-                        <div class="total-row">
-                            <span><i class="fas fa-calculator"></i> Subtotal:</span>
-                            <span id="subtotal">$ 0</span>
-                        </div>
-                        <div class="total-row">
-                            <span><i class="fas fa-tag"></i> Descuento Total:</span>
-                            <span id="descuento-total">$ 0</span>
-                        </div>
-                        <div class="total-row total-final">
-                            <span><i class="fas fa-file-invoice-dollar"></i> TOTAL:</span>
-                            <span id="total-final">$ 0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Información adicional (solo para PDF) -->
-                <div class="form-section pdf-only">
-                    <h3><i class="fas fa-file-pdf"></i> Información Adicional (Solo PDF)</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="TELEFONO">Teléfono</label>
-                            <input type="number" id="TELEFONO" name="TELEFONO" 
-                                placeholder="Ej: 3106723072"
-                                data-tooltip="Teléfono de contacto del paciente">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="ADMISION">N° Admisión</label>
-                            <input type="number" id="ADMISION" name="ADMISION" 
-                                placeholder="Número de admisión"
-                                data-tooltip="Número de admisión hospitalaria">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label for="DIRECCION">Dirección</label>
-                            <input type="text" id="DIRECCION" name="DIRECCION" 
-                                placeholder="Calle, número, barrio"
-                                data-tooltip="Dirección completa del paciente">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="DEPARTAMENTO">Departamento</label>
-                            <select id="DEPARTAMENTO" name="DEPARTAMENTO" required
-                                data-tooltip="Departamento de residencia">
-                                <option value="">Seleccione un departamento...</option>
-                                <option value="Amazonas">Amazonas</option>
-                                <option value="Antioquia">Antioquia</option>
-                                <option value="Atlántico">Atlántico</option>
-                                <option value="Bolívar">Bolívar</option>
-                                <option value="Boyacá">Boyacá</option>
-                                <option value="Caldas">Caldas</option>
-                                <option value="Caquetá">Caquetá</option>
-                                <option value="Casanare">Casanare</option>
-                                <option value="Cauca">Cauca</option>
-                                <option value="Cesar">Cesar</option>
-                                <option value="Chocó">Chocó</option>
-                                <option value="Córdoba">Córdoba</option>
-                                <option value="Cundinamarca">Cundinamarca</option>
-                                <option value="Guainía">Guainía</option>
-                                <option value="Guaviare">Guaviare</option>
-                                <option value="Huila">Huila</option>
-                                <option value="La Guajira">La Guajira</option>
-                                <option value="Magdalena">Magdalena</option>
-                                <option value="Meta">Meta</option>
-                                <option value="Nariño">Nariño</option>
-                                <option value="Norte de Santander">Norte de Santander</option>
-                                <option value="Putumayo">Putumayo</option>
-                                <option value="Quindío">Quindío</option>
-                                <option value="Risaralda">Risaralda</option>
-                                <option value="San Andrés y Providencia">San Andrés y Providencia</option>
-                                <option value="Santander">Santander</option>
-                                <option value="Sucre">Sucre</option>
-                                <option value="Tolima">Tolima</option>
-                                <option value="Valle del Cauca">Valle del Cauca</option>
-                                <option value="Vaupés">Vaupés</option>
-                                <option value="Vichada">Vichada</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="CIUDAD">Ciudad</label>
-                            <select id="CIUDAD" name="CIUDAD" required disabled
-                                data-tooltip="Ciudad de residencia">
-                                <option value="">Primero elija un departamento</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label for="OBSERVACION_GENERAL" class="required">Observación General (Para PDF)</label>
-                            <textarea id="OBSERVACION_GENERAL" name="OBSERVACION_GENERAL" rows="3" required 
-                                    placeholder="Esta observación aparecerá en el PDF impreso"
-                                    data-tooltip="Observaciones que aparecerán en el documento PDF"></textarea>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label for="AUTORIZADO_POR" class="required">Autorizado por</label>
-                            <input type="text" id="AUTORIZADOR" name="AUTORIZADOR" required 
-                                   placeholder="Nombre completo del autorizador"
-                                   data-tooltip="Persona que autoriza la cotización">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Botones de acción -->
-                <div class="action-buttons">
-                    <button type="button" id="vaciarFormulario" class="btn btn-secondary">
-                        <i class="fas fa-trash-alt"></i> Vaciar Todo
-                    </button>
-                    <button type="button" id="guardarImprimirBtn" class="btn btn-success">
-                        <i class="fas fa-save"></i> Guardar + PDF
-                    </button>
-                    <button type="button" id="descargarPdfBtn" class="btn btn-primary" disabled>
-                        <i class="fas fa-file-download"></i> Solo PDF
-                    </button>
-                </div>
-                
-                <div id="responseMessage" class="response-message"></div>
-                
-                <!-- Instrucciones -->
-                <div class="form-section" style="background: #f0f7ff; border-left-color: #4dabf7; margin-top: 30px;">
-                    <h3><i class="fas fa-info-circle"></i> Instrucciones</h3>
-                    <div style="font-size: 0.9rem; color: #495057; line-height: 1.6;">
-                        <p><strong>1.</strong> Complete todos los campos marcados con * (obligatorios)</p>
-                        <p><strong>2.</strong> Agregue los productos/servicios con el botón "Agregar Producto"</p>
-                        <p><strong>3.</strong> "Guardar + PDF": Guarda en Google Sheets y genera PDF</p>
-                        <p><strong>4.</strong> "Solo PDF": Solo genera el documento sin guardar</p>
-                        <p><strong>5.</strong> "Vaciar Todo": Limpia completamente el formulario</p>
-                        <p style="margin-top: 10px; font-style: italic; color: #6c757d;">
-                            <i class="fas fa-exclamation-circle"></i> 
-                            La "Observación Adicional" solo se guarda en Google Sheets, no aparece en el PDF
-                        </p>
-                    </div>
-                </div>
-            </form>
         </div>
+
+        <nav class="tabs" role="tablist" aria-label="Módulos">
+            <button type="button" class="tab" role="tab" data-tab="nueva" aria-selected="true">
+                <i class="fas fa-file-medical"></i> Nueva cotización
+            </button>
+            <button type="button" class="tab" role="tab" data-tab="registros" aria-selected="false">
+                <i class="fas fa-folder-open"></i> Cotizaciones realizadas
+                <span class="badge" id="badgeRegistros" hidden>0</span>
+            </button>
+        </nav>
     </div>
 
-    <script src="script.js"></script>
+    <svg class="pulse" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+        <path pathLength="1" vector-effect="non-scaling-stroke"
+              d="M0 22 H330 L350 22 L360 14 L370 22 L392 22 L402 30 L414 2 L426 38 L436 22 L460 22 L474 16 L488 22 H1200"/>
+    </svg>
+</header>
+
+<main class="page">
+
+<!-- ============ MÓDULO 1: NUEVA COTIZACIÓN ============ -->
+<section data-panel="nueva" role="tabpanel">
+    <div class="page-head">
+        <h1>Nueva cotización</h1>
+        <p>Completa los datos del paciente y los servicios. Los campos con asterisco son obligatorios.</p>
+    </div>
+
+    <form id="cotizacionForm" class="quote" novalidate>
+        <div class="quote__main">
+
+            <section class="block">
+                <div class="block__head">
+                    <h2>Paciente y cotización</h2>
+                    <p>Estos datos se guardan en Google Sheets y aparecen en el PDF.</p>
+                </div>
+                <div class="block__fields">
+                    <div class="field req">
+                        <label for="N_CONSECUTIVO">N° cotización</label>
+                        <input type="number" id="N_CONSECUTIVO" required placeholder="Ej: 1524">
+                        <button type="button" class="hint-btn" id="sugerenciaConsecutivo" hidden></button>
+                    </div>
+                    <div class="field req">
+                        <label for="FECHA_COTIZACION">Fecha</label>
+                        <input type="date" id="FECHA_COTIZACION" required>
+                    </div>
+
+                    <div class="field req">
+                        <label for="TIPO_DOCUMENTO">Tipo de documento</label>
+                        <select id="TIPO_DOCUMENTO" required>
+                            <option value="NIT">Número de Identificación Tributaria (NIT)</option>
+                            <option value="CC">Cédula de Ciudadanía (CC)</option>
+                            <option value="TI">Tarjeta de Identidad (TI)</option>
+                            <option value="CE">Cédula de Extranjería (CE)</option>
+                            <option value="PT">Permiso por protección temporal (PT)</option>
+                            <option value="RC">Registro Civil (RC)</option>
+                            <option value="CN">Nacido vivo</option>
+                        </select>
+                    </div>
+                    <div class="field req">
+                        <label for="DOCUMENTO">N° documento</label>
+                        <input type="number" id="DOCUMENTO" required placeholder="Número de documento">
+                    </div>
+
+                    <div class="field req">
+                        <label for="NOMBRES">Nombres del paciente</label>
+                        <input type="text" id="NOMBRES" required placeholder="Apellidos y nombres">
+                    </div>
+                    <div class="field req">
+                        <label for="SEXO">Sexo</label>
+                        <select id="SEXO" required>
+                            <option value="M">Masculino (M)</option>
+                            <option value="F">Femenino (F)</option>
+                        </select>
+                    </div>
+
+                    <div class="field req">
+                        <label for="EMPRESA">Empresa / EPS</label>
+                        <select id="EMPRESA" required>
+                            <option value="">Selecciona una EPS</option>
+                            <option value="DUSAKAWI EPS-I">DUSAKAWI EPS-I</option>
+                            <option value="ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S">ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S</option>
+                            <option value="EPS SURAMERICANA S.A">EPS SURAMERICANA S.A</option>
+                            <option value="COLMENA RIESGOS PROFESIONALES S.A.">COLMENA RIESGOS PROFESIONALES S.A.</option>
+                            <option value="FIDEICOMISOS PATRIMONIOS AUTONÓMOS FIDUCIARIA LA PREVISORA S.A.">FIDEICOMISOS PATRIMONIOS AUTONÓMOS FIDUCIARIA LA PREVISORA S.A.</option>
+                            <option value="GOBERNACION DEL CESAR (SEC DE SALUD)">GOBERNACION DEL CESAR (SEC DE SALUD)</option>
+                            <option value="AXA COLPATRIA SEGUROS DE VIDA S.A">AXA COLPATRIA SEGUROS DE VIDA S.A</option>
+                            <option value="EPS Familiar De Colombia S.A.S">EPS Familiar De Colombia S.A.S</option>
+                            <option value="SUMIMEDICAL SAS">SUMIMEDICAL SAS</option>
+                            <option value="MUTUAL SER">MUTUAL SER</option>
+                            <option value="PARTICULAR">PARTICULAR</option>
+                            <option value="ASMET SALUD">ASMET SALUD</option>
+                            <option value="COOSALUD ENTIDAD PROMOTORA DE SALUD S.A">COOSALUD ENTIDAD PROMOTORA DE SALUD S.A</option>
+                            <option value="SALUD TOTAL EPS - S.SA.">SALUD TOTAL EPS - S.SA.</option>
+                            <option value="PROTEGER EPS S.A.S.">PROTEGER EPS S.A.S.</option>
+                            <option value="NUEVA EPS">NUEVA EPS</option>
+                            <option value="REGIONAL DE ASEGURAMIENTO Nº 8">REGIONAL DE ASEGURAMIENTO Nº 8</option>
+                            <option value="POSITIVA COMPAÑÍA DE SEGUROS S.A. (ARL)">POSITIVA COMPAÑÍA DE SEGUROS S.A. (ARL)</option>
+                            <option value="CAPITAL SALUD EPS-S">CAPITAL SALUD EPS-S</option>
+                            <option value="SAVIA SALUD">SAVIA SALUD</option>
+                            <option value=" EPS FAMISANAR SAS"> EPS FAMISANAR SAS</option>
+                        </select>
+                    </div>
+                    <div class="field req">
+                        <label for="ESPECIALIDAD">Especialidad</label>
+                        <select id="ESPECIALIDAD" required>
+                            <option value="">Selecciona una especialidad</option>
+                            <option value="CIRUGIA MAXILOFACIAL">CIRUGIA MAXILOFACIAL</option>
+                            <option value="ORTOPEDIA">ORTOPEDIA</option>
+                            <option value="CIRUGIA PLASTICA">CIRUGIA PLASTICA</option>
+                            <option value="NEUROCIRUGIA">NEUROCIRUGIA</option>
+                            <option value="CIRUGIA DE TORAX">CIRUGIA DE TORAX</option>
+                            <option value="CIRUGIA GENERAL">CIRUGIA GENERAL</option>
+                            <option value="GASTROENTEROLOGIA">GASTROENTEROLOGIA</option>
+                            <option value="UROLOGIA">UROLOGIA</option>
+                            <option value="GINECOLOGIA">GINECOLOGIA</option>
+                            <option value="INTENSIVISTA">INTENSIVISTA</option>
+                            <option value="MEDICINA INTERNA">MEDICINA INTERNA</option>
+                            <option value="RADIOLOGÍA INTERVENCIONISTA">RADIOLOGÍA INTERVENCIONISTA</option>
+                            <option value="NEONATOLOGIA">NEONATOLOGIA</option>
+                            <option value="PEDIATRIA">PEDIATRIA</option>
+                        </select>
+                    </div>
+
+                    <div class="field span-2">
+                        <label for="OBSERVACION_ADICIONAL">Observación adicional (solo Google Sheets)</label>
+                        <textarea id="OBSERVACION_ADICIONAL" rows="2" class="note-sheet"
+                                  placeholder="Esta observación solo se guarda en Google Sheets, no aparece en el PDF"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <section class="block" id="productosSection">
+                <div class="block__head">
+                    <h2>Productos y servicios</h2>
+                    <p>Agrega una línea por cada producto o servicio cotizado.</p>
+                </div>
+                <div class="block__fields block__fields--stack">
+                    <div id="productosContainer"></div>
+                    <button type="button" id="agregarProductoBtn" class="btn btn-soft">
+                        <i class="fas fa-plus"></i> Agregar producto
+                    </button>
+                </div>
+            </section>
+
+            <section class="block block--pdf">
+                <div class="block__head">
+                    <h2>Datos para el PDF</h2>
+                    <p>Esta información solo se imprime en el documento.</p>
+                </div>
+                <div class="block__fields">
+                    <div class="field">
+                        <label for="TELEFONO">Teléfono</label>
+                        <input type="number" id="TELEFONO" placeholder="Ej: 3106723072">
+                    </div>
+                    <div class="field">
+                        <label for="ADMISION">N° admisión</label>
+                        <input type="number" id="ADMISION" placeholder="Número de admisión">
+                    </div>
+                    <div class="field span-2">
+                        <label for="DIRECCION">Dirección</label>
+                        <input type="text" id="DIRECCION" placeholder="Calle, número, barrio">
+                    </div>
+                    <div class="field">
+                        <label for="DEPARTAMENTO">Departamento</label>
+                        <select id="DEPARTAMENTO" required>
+                            <option value="">Seleccione un departamento...</option>
+                            <option value="Amazonas">Amazonas</option>
+                            <option value="Antioquia">Antioquia</option>
+                            <option value="Atlántico">Atlántico</option>
+                            <option value="Bolívar">Bolívar</option>
+                            <option value="Boyacá">Boyacá</option>
+                            <option value="Caldas">Caldas</option>
+                            <option value="Caquetá">Caquetá</option>
+                            <option value="Casanare">Casanare</option>
+                            <option value="Cauca">Cauca</option>
+                            <option value="Cesar">Cesar</option>
+                            <option value="Chocó">Chocó</option>
+                            <option value="Córdoba">Córdoba</option>
+                            <option value="Cundinamarca">Cundinamarca</option>
+                            <option value="Guainía">Guainía</option>
+                            <option value="Guaviare">Guaviare</option>
+                            <option value="Huila">Huila</option>
+                            <option value="La Guajira">La Guajira</option>
+                            <option value="Magdalena">Magdalena</option>
+                            <option value="Meta">Meta</option>
+                            <option value="Nariño">Nariño</option>
+                            <option value="Norte de Santander">Norte de Santander</option>
+                            <option value="Putumayo">Putumayo</option>
+                            <option value="Quindío">Quindío</option>
+                            <option value="Risaralda">Risaralda</option>
+                            <option value="San Andrés y Providencia">San Andrés y Providencia</option>
+                            <option value="Santander">Santander</option>
+                            <option value="Sucre">Sucre</option>
+                            <option value="Tolima">Tolima</option>
+                            <option value="Valle del Cauca">Valle del Cauca</option>
+                            <option value="Vaupés">Vaupés</option>
+                            <option value="Vichada">Vichada</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="CIUDAD">Ciudad</label>
+                        <select id="CIUDAD" required disabled>
+                            <option value="">Primero elija un departamento</option>
+                        </select>
+                    </div>
+                    <div class="field req span-2">
+                        <label for="OBSERVACION_GENERAL">Observación general (aparece en el PDF)</label>
+                        <textarea id="OBSERVACION_GENERAL" rows="3" required
+                                  placeholder="Esta observación aparecerá en el PDF impreso"></textarea>
+                    </div>
+                    <div class="field req span-2">
+                        <label for="AUTORIZADOR">Autorizado por</label>
+                        <input type="text" id="AUTORIZADOR" required placeholder="Nombre completo de quien autoriza">
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <aside class="summary" aria-label="Resumen de la cotización">
+            <h2>Resumen</h2>
+            <dl class="summary__rows">
+                <div><dt>Subtotal</dt><dd id="subtotal">$ 0</dd></div>
+                <div><dt>Descuento</dt><dd id="descuento-total">$ 0</dd></div>
+            </dl>
+            <div class="summary__total">
+                <span>Total</span>
+                <strong id="total-final">$ 0</strong>
+            </div>
+            <div class="summary__actions">
+                <button type="button" id="guardarImprimirBtn" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar y generar PDF
+                </button>
+                <button type="button" id="descargarPdfBtn" class="btn btn-secondary" disabled>
+                    <i class="fas fa-file-pdf"></i> Solo PDF
+                </button>
+                <button type="button" id="vaciarFormulario" class="btn btn-ghost">
+                    <i class="fas fa-eraser"></i> Vaciar formulario
+                </button>
+            </div>
+            <p class="summary__help">«Guardar y generar PDF» registra la cotización en Google Sheets. «Solo PDF» no guarda nada.</p>
+        </aside>
+    </form>
+</section>
+
+<!-- ============ MÓDULO 2: COTIZACIONES REALIZADAS ============ -->
+<section data-panel="registros" role="tabpanel" hidden>
+    <div class="page-head page-head--row">
+        <div>
+            <h1>Cotizaciones realizadas</h1>
+            <p>Busca una cotización guardada, edítala y genera un nuevo PDF.</p>
+        </div>
+        <button type="button" id="btnRefrescar" class="btn btn-secondary">
+            <i class="fas fa-rotate"></i> Actualizar
+        </button>
+    </div>
+
+    <div class="filters" role="search">
+        <div class="field">
+            <label for="fDocumento">N° documento</label>
+            <input type="search" id="fDocumento" placeholder="Buscar documento" inputmode="numeric" autocomplete="off">
+        </div>
+        <div class="field">
+            <label for="fConsecutivo">N° cotización</label>
+            <input type="search" id="fConsecutivo" placeholder="Buscar consecutivo" inputmode="numeric" autocomplete="off">
+        </div>
+        <div class="field">
+            <label for="fProducto">Producto cotizado</label>
+            <input type="search" id="fProducto" placeholder="Ej: clavo, placa, balón" autocomplete="off">
+        </div>
+        <div class="field">
+            <label for="fEspecialidad">Especialidad</label>
+            <select id="fEspecialidad"><option value="">Todas</option></select>
+        </div>
+        <button type="button" id="btnLimpiarFiltros" class="btn btn-ghost filters__clear">
+            <i class="fas fa-xmark"></i> Limpiar filtros
+        </button>
+    </div>
+
+    <p class="results-count" id="resultadoConteo" aria-live="polite"></p>
+
+    <div class="table-wrap">
+        <table class="records">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Paciente</th>
+                    <th scope="col">EPS</th>
+                    <th scope="col">Especialidad</th>
+                    <th scope="col">Servicios</th>
+                    <th scope="col" class="right">Total</th>
+                    <th scope="col"><span class="sr-only">Acciones</span></th>
+                </tr>
+            </thead>
+            <tbody id="tbodyRegistros"></tbody>
+        </table>
+        <div id="estadoRegistros" class="state" hidden></div>
+    </div>
+    <div class="more"><button type="button" id="btnMas" class="btn btn-secondary" hidden>Mostrar más</button></div>
+</section>
+</main>
+
+<!-- ============ EDITOR (panel lateral) ============ -->
+<dialog id="editorDialog" class="drawer" aria-labelledby="editorTitulo">
+    <form id="editForm" novalidate method="dialog">
+        <header class="drawer__head">
+            <div>
+                <h2 id="editorTitulo">Editar cotización</h2>
+                <p id="editorSub"></p>
+            </div>
+            <button type="button" class="icon-btn" id="editorCerrar" aria-label="Cerrar"><i class="fas fa-xmark"></i></button>
+        </header>
+        <div class="drawer__body" id="editorBody"></div>
+        <footer class="drawer__foot">
+            <div class="drawer__total">
+                <span>Total</span>
+                <strong id="editorTotal">$ 0</strong>
+                <small id="editorTotalRegistrado"></small>
+            </div>
+            <div class="drawer__buttons">
+                <button type="button" class="btn btn-ghost" id="editorSoloPdf"><i class="fas fa-file-pdf"></i> Solo PDF</button>
+                <button type="button" class="btn btn-secondary" id="editorGuardar"><i class="fas fa-save"></i> Guardar cambios</button>
+                <button type="button" class="btn btn-primary" id="editorGuardarPdf"><i class="fas fa-file-arrow-down"></i> Guardar y generar PDF</button>
+            </div>
+        </footer>
+    </form>
+</dialog>
+
+<div id="responseMessage" class="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
 
